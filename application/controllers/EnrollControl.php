@@ -234,25 +234,79 @@ class EnrollControl extends CI_Controller{
         http_data(200, $resultArr, $this);
     }
     public function get_activity_form(){
-        $this->receive_data['order_info']['order_id'] = get_random_tool(4).time();
-        $this->receive_data['order_info']['order_customer_name'] = $this->receive_data['form']['sign_name'];
-        $this->receive_data['order_info']['order_customer_phone'] = $this->receive_data['form']['sign_phone'];
-        $this->receive_data['order_info']['created_by'] = 'HFTX_Sys';
-        $this->receive_data['order_info']['created_time'] = date('Y-m-d H:i:s');
-        $this->receive_data['form']['sign_competition_id'] = $this->receive_data['order_info']['order_capid'];
-        $this->receive_data['form']['competition_name'] = $this->receive_data['order_info']['order_product'];
-        $this->receive_data['form']['sign_created_by'] = 'HFTX_Sys';
-        $this->receive_data['form']['sign_created_time'] = date('Y-m-d H:i:s');
-        $this->receive_data['form']['sign_statue'] = '未付款';
-        if($this->receive_data['order_info']['order_statue'] === '进行中'){
-            $this->receive_data['form']['sign_statue'] = '已付款';
-        }
-        $res = $this->enroll->set_activity_info( $this->receive_data);
+//        $this->receive_data['order_info']['order_id'] = get_random_tool(4).time();
+//        $this->receive_data['order_info']['order_customer_name'] = $this->receive_data['form']['sign_name'];
+//        $this->receive_data['order_info']['order_customer_phone'] = $this->receive_data['form']['sign_phone'];
+//        $this->receive_data['order_info']['created_by'] = 'HFTX_Sys';
+//        $this->receive_data['order_info']['created_time'] = date('Y-m-d H:i:s');
+//        $this->receive_data['form']['sign_competition_id'] = $this->receive_data['order_info']['order_capid'];
+//        $this->receive_data['form']['competition_name'] = $this->receive_data['order_info']['order_product'];
+//        $this->receive_data['form']['sign_created_by'] = 'HFTX_Sys';
+//        $this->receive_data['form']['sign_created_time'] = date('Y-m-d H:i:s');
+//        $this->receive_data['form']['sign_statue'] = '未付款';
+//        if($this->receive_data['order_info']['order_statue'] === '进行中'){
+//            $this->receive_data['form']['sign_statue'] = '已付款';
+//        }
+        $this->receive_data = $this->set_receive_data($this->receive_data);
+        $res = $this->enroll->set_order_enroll_data( $this->receive_data);
         if(!$res){
             $resultArr = build_resultArr('GAF001', FALSE, 0,'活动报名失败', [] );
             http_data(200, $resultArr, $this);
         }
         $resultArr = build_resultArr('GAF000', TRUE, 0,'活动报名息成功', []);
         http_data(200, $resultArr, $this);
+    }
+    public function get_course_info(){
+        $res = $this->enroll->get_course_info($this->receive_data);
+        if(!$res){
+            $resultArr = build_resultArr('GCI001', FALSE, 0,'获取课程信息错误', [] );
+            http_data(200, $resultArr, $this);
+        }
+        $this->receive_data['model_id'] = $res[0]['course_sign_model'];
+        $res_index = $this->enroll->get_sign_index($this->receive_data);
+        if(!$res_index){
+            $resultArr = build_resultArr('GCI002', FALSE, 0,'获取课程报名表信息错误', [] );
+            http_data(200, $resultArr, $this);
+        }
+        $resultArr = build_resultArr('GAI000', TRUE, 0,'获取课程信息成功', [$res[0],$res_index]);
+        http_data(200, $resultArr, $this);
+    }
+    public function set_course_form(){
+        $this->receive_data = $this->set_receive_data($this->receive_data);
+        $res = $this->enroll->set_order_enroll_data( $this->receive_data);
+        if(!$res){
+            $resultArr = build_resultArr('GCF001', FALSE, 0,'培训报名失败', [] );
+            http_data(200, $resultArr, $this);
+        }
+        $this->receive_data['user_point'] = (int)$this->receive_data['user_point']+(int)$this->receive_data['course_signIntegral'];
+        $res_p = $this->enroll->update_user_point($this->receive_data);
+        if(!$res){
+            $resultArr = build_resultArr('GCF002', FALSE, 0,'更新用户积分失败', [] );
+            http_data(200, $resultArr, $this);
+        }
+        $resultArr = build_resultArr('GCF000', TRUE, 0,'培训报名息成功', []);
+        http_data(200, $resultArr, $this);
+    }
+    public function set_receive_data($data): array
+    {
+        $data['order_info']['order_id'] = get_random_tool(4).time();
+        $data['order_info']['created_by'] = 'HFTX_Sys';
+        $data['order_info']['created_time'] = date('Y-m-d H:i:s');
+        $data['form']['sign_competition_id'] = $data['order_info']['order_capid'];
+        $data['form']['competition_name'] = $data['order_info']['order_product'];
+        $data['sign_created_by'] = 'HFTX_Sys';
+        $data['form']['sign_created_time'] = date('Y-m-d H:i:s');
+        $data['form']['sign_statue'] = '未付款';
+        if($data['order_info']['order_statue'] === '进行中'){
+            $data['form']['sign_statue'] = '已付款';
+        }
+        if(isset($data['form']['sign_name']) && isset($data['form']['sign_phone'])){
+            $data['order_info']['order_customer_name'] = $data['form']['sign_name'];
+            $data['order_info']['order_customer_phone'] = $data['form']['sign_phone'];
+        }else{
+            $data['order_info']['order_customer_name'] = $data['user_info']['members_name'];
+            $data['order_info']['order_customer_phone'] = $data['user_info']['members_phone'];
+        }
+        return $data;
     }
 }

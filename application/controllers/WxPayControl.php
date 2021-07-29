@@ -49,7 +49,7 @@ class WxPayControl extends CI_Controller{
             $resultArr = build_resultArr('UOI001', FALSE, 0, '更新订单信息失败', null);
             http_data(200, $resultArr, $this);
         }
-        if($this->receive_data['order_type']==='比赛'){
+        if($this->receive_data['order_type']==='比赛' || $this->receive_data['order_type']==='活动'){
             $res_sign = $this->wxpay->update_enroll_info($this->receive_data);
             if(!$res_sign){
                 $resultArr = build_resultArr('UOI002', FALSE, 0, '更新报名信息失败', null);

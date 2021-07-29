@@ -23,6 +23,7 @@ $route['ord/get'] = 'OrderControl/getRow';//获取赛事赛区报名订单
 $route['ord/getall'] = 'OrderControl/getallRow';//获取商品订单
 $route['ord/getdet'] = 'OrderControl/getdetialOrder';//获取商品订单详情
 $route['ord/yesno'] = 'OrderControl/yesornoRow';//同意或拒绝退款
+$route['ord/modifyprice'] = 'OrderControl/modifypriceRow';//修改订单价格
 $route['ord/pay'] = 'OrderControl/paymentRow';//支付
 $route['ord/ship'] = 'OrderControl/shippedRow';//卖家已发货
 $route['ord/rec'] = 'OrderControl/receivedgoodRow';//确认收货

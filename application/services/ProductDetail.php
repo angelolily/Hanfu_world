@@ -50,4 +50,16 @@ class ProductDetail extends HTY_service{
         $where = array('ParameterTitle'=>'培训客服');
         return $this->Sys_Model->table_seleRow("*",'base_parameter',$where);
     }
+    public function get_course_info($data){
+        return $this->Sys_Model->table_seleRow("*",'course',[]);
+    }
+    public function get_aim_course_info($data){
+        $where = array('course_id'=>$data['course_id']);
+        return $this->Sys_Model->table_seleRow("*",'course',$where);
+    }
+    public function get_user_course($data){
+        $field="a.order_autoid,a.order_datetime,a.order_statue,b.course_name,b.course_describe,b.course_cover,b.course_beginDate,b.course_endDate,b.course_signPrice,b.course_status";
+        $sql="select $field from `order` a left join course b on a.order_capid=b.course_id where a.members_id='{$data['openid']}' and order_type='培训' order by a.order_datetime desc";
+        return $this->Sys_Model->execute_sql($sql);
+    }
 }

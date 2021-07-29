@@ -22,4 +22,9 @@ application/logs/*
 /public/enroll/*
 /public/comcover/*
 /public/comgraphic/*
-
+/public/coursecover/*
+/public/coursegraphic/*
+/public/activitycover/*
+/public/activitygraphic/*
+/public/commoditycover/*
+/public/commoditygraphic/*

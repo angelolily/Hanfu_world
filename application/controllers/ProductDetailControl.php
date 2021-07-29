@@ -149,4 +149,31 @@ class ProductDetailControl extends CI_Controller{
         $resultArr = build_resultArr('SER000', TRUE, 0,'更新表单信息成功', null);
         http_data(200, $resultArr, $this);
     }
+    public function get_course_info(){
+        $res = $this->productdetail->get_course_info($this->receive_data);
+        if(!$res){
+            $resultArr = build_resultArr('GCI001', FALSE, 0,'获取课程信息错误', null );
+            http_data(200, $resultArr, $this);
+        }
+        $resultArr = build_resultArr('GCI000', TRUE, 0,'获取课程信息成功', $res);
+        http_data(200, $resultArr, $this);
+    }
+    public function get_aim_course_info(){
+        $res = $this->productdetail->get_aim_course_info($this->receive_data);
+        if(!$res){
+            $resultArr = build_resultArr('GCI101', FALSE, 0,'获取目标课程信息错误', null );
+            http_data(200, $resultArr, $this);
+        }
+        $resultArr = build_resultArr('GCI100', TRUE, 0,'获取目标课程信息成功', $res[0]);
+        http_data(200, $resultArr, $this);
+    }
+    public function get_user_course(){
+        $res = $this->productdetail->get_user_course($this->receive_data);
+        if(!$res){
+            $resultArr = build_resultArr('GUC001', FALSE, 0,'获取目标课程信息错误', null );
+            http_data(200, $resultArr, $this);
+        }
+        $resultArr = build_resultArr('GUC000', TRUE, 0,'获取目标课程信息成功', json_encode($res));
+        http_data(200, $resultArr, $this);
+    }
 }

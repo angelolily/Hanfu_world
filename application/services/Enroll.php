@@ -178,4 +178,29 @@ class Enroll extends HTY_service{
         }
         return $returnInfo;
     }
+    public function get_course_info($data){
+        $where = array('course_id'=>$data['course_id']);
+        return $this->Sys_Model->table_seleRow("*",'course',$where);
+    }
+    public function set_order_enroll_data($data): bool
+    {
+        $returnInfo = true;
+        $this->db->trans_begin();
+        $this->Sys_Model->table_addRow("order",$data['order_info']);
+        $data['form']['sign_order_id'] = $this->db->insert_id();
+        $this->Sys_Model->table_addRow("sign_up",$data['form']);
+        $row=$this->db->affected_rows();
+        if (($this->db->trans_status() === FALSE) && $row<=0){
+            $this->db->trans_rollback();
+            $returnInfo = false;
+        }else{
+            $this->db->trans_commit();
+        }
+        return $returnInfo;
+    }
+    public function update_user_point($data){
+        $where = array('members_openid'=>$data['order_info']['members_id']);
+        $update = array('members_integral'=>(int)$data['user_point']);
+        return $this->Sys_Model->table_updateRow("members",$update,$where);
+    }
 }
