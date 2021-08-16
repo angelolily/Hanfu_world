@@ -217,8 +217,7 @@ class wProductStore extends HTY_service
 
 
 
-            $order_list=$this->Custome_Model->table_joinSeleRow_limit("order.*,specification.competition_is_vate","order",
-                $oid,[],10,0,"order_datetime,order_autoid","DESC",[],"","left","specification","specification.DeptId=order.order_deptid and order.order_capid=specification.relevancy_id");
+            $order_list=$this->Custome_Model->table_joinSeleRow_limit("*","order",$oid,[],10,0,"order_datetime,order_autoid","DESC",[],"","left","competition","competition.competition_id=order.order_capid");
 
 
 
