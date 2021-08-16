@@ -192,7 +192,7 @@ class Charge extends HTY_service
      */
     public function getPa($val)
     {
-        $field="a.order_autoid,a.order_datetime,a.order_statue,b.activity_name,b.activity_describe,b.activity_cover,b.activity_beginDate,b.activity_endDate,b.activity_signPrice,b.activity_status";
+        $field="a.order_autoid,a.order_datetime,a.order_statue,b.activity_name,b.activity_describe,b.activity_cover,b.activity_beginDate,b.activity_endDate,b.activity_signPrice,b.activity_status,b.activity_signIntegral";
         $sql="select $field from `order` a left join activity b on a.order_capid=b.activity_id where a.members_id='{$val['members_id']}' and order_type='活动' order by a.order_datetime desc";
         $allData=$this->Sys_Model->execute_sql($sql);
         $result=$allData;
@@ -205,17 +205,38 @@ class Charge extends HTY_service
      * @param array $val 会员openid:members_openid 活动id:activity_id
      * @return array $result
      */
-    public function sign($val)
+    public function sign($val): bool
     {
-        $where['activity_id']=$val['activity_id'];
-        $info=$this->Sys_Model->table_seleRow('activity_signIntegral','activity',$where);
-        $point=$info[0]['activity_signIntegral'];
-        $sql_arr=[];
-        $sql1="update `order` set order_statue='已结束' where order_autoid={$val['order_autoid']}";
-        $sql2="update `members` set members_integral=members_integral+{$point} where members_openid='{$val['members_openid']}'";
-        array_push($sql_arr,$sql1,$sql2);
-        $result=$this->Sys_Model->table_trans($sql_arr);
-        return $result;
+        $returnInfo = true;
+        $this->db->trans_begin();
+        $where['activity_id'] = $val['activity_id'];
+        $info = $this->Sys_Model->table_seleRow('activity_name,activity_signIntegral','activity',$where);
+        $point = $info[0]['activity_signIntegral'];
+        $where_order = array('order_autoid'=>$val['order_autoid']);
+        $update = array('order_statue'=>'已结束');
+        $this->Sys_Model->table_updateRow("order",$update,$where_order);
+        $sql="update `members` set members_integral=members_integral+{$point} where members_id='{$val['members_openid']}'";
+        $this->Sys_Model->execute_sql($sql,2);
+        $new_date = array(
+            'point_user_poenid'=>$val['members_openid'],
+            'point_num'=>$point,
+            'point_source'=>$info[0]['activity_name'].'签到积分',
+            'point_creat_time'=>date('Y-m-d H:i:s'),
+        );
+        $this->Sys_Model->table_addRow("point",$new_date);
+        $row = $this->db->affected_rows();
+        if (($this->db->trans_status() === FALSE) && $row<=0){
+            $this->db->trans_rollback();
+            $returnInfo = false;
+        }else{
+            $this->db->trans_commit();
+        }
+        if($returnInfo){
+            $res = $info[0]['activity_signIntegral'];
+        }else{
+            $res = $returnInfo;
+        }
+        return $res;
     }
     /**
      * Notes:获取商品
