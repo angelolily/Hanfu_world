@@ -431,9 +431,8 @@ class Charge extends HTY_service
                 $this->Sys_Model->table_addRow('order',$order);
                 //判断是否使用积分
                 if($order['order_integral']!=0){
-                    $where_member['members_id']=$order['members_id'];
-                    $update_member['members_integral']=0;
-                    $this->Sys_Model->table_updateRow('members',$update_member,$where_member);
+                    $sql="update members set members_integral=members_integral-{$order['order_integral']} where members_id = {$order['members_id']}";
+                    $this->Sys_Model->execute_sql($sql,2);
                 }
                 foreach ($order_item as $val){
                     $val['orderitem_created_by']=$order['members_id'];
@@ -447,11 +446,6 @@ class Charge extends HTY_service
                     if(isset($val['carid'])&&$val['carid']){
                         $where_cart['carid']=$val['carid'];
                         $this->Sys_Model->table_del("shop_cart",$where_cart);
-                    }
-                    //判断是否有积分
-                    if($val['order_points']){
-                        $sql="update members set members_integral=members_integral+{$val['order_points']} where members_id = {$val['order_user']}";
-                        $this->Sys_Model->execute_sql($sql,2);
                     }
                 }
                 if (($this->db->trans_status() === FALSE))
@@ -530,11 +524,6 @@ class Charge extends HTY_service
                     $where_cart['carid']=$val['carid'];
                     $this->Sys_Model->table_del("shop_cart",$where_cart);
                 }
-                //判断是否有积分
-                if($val['order_points']){
-                    $sql="update members set members_integral=members_integral+{$val['order_points']} where members_id = {$val['order_user']}";
-                    $this->Sys_Model->execute_sql($sql);
-                }
             }
             if (($this->db->trans_status() === FALSE))
             {
@@ -571,6 +560,12 @@ class Charge extends HTY_service
         if($val['order_statue']!=""){
             $where_statue=" and a.order_statue='{$val['order_statue']}'";
         }
+        if($val['order_refund_flag']!=""){
+            $where_statue=" and a.order_refund_flag!=0";
+            if($val['order_refund_flag'] == "0"){
+                $where_statue=" and a.order_refund_flag=0";
+            }
+        }
         if($val['commodity_name']!=""){
             $where_com_name=" and b.commodity_name like '%{$val['commodity_name']}%'";
         }
@@ -599,10 +594,18 @@ class Charge extends HTY_service
     {
         $update['order_statue']="已完成";
         $result=$this->Sys_Model->table_updateRow('order',$update,$val);
+        $order_item=$this->Sys_Model->table_seleRow('*','orderitem',$val);
+        foreach ($order_item as $val){
+            //判断是否有积分
+            if($val['order_points']){
+                $sql="update members set members_integral=members_integral+{$val['order_points']} where members_id = {$val['order_user']}";
+                $this->Sys_Model->execute_sql($sql,2);
+            }
+        }
         return $result;
     }
     /**
-     * Notes:确认收货
+     * Notes:退款
      * User: hyr
      * DateTime: 2021/7/28 11:19
      * @param array $val 订单明细表id:orderitem_id  退款类型:orderitem_return_type 退货理由:orderitem_return_rete
