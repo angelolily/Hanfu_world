@@ -577,22 +577,27 @@ class Charge extends HTY_service
         $offset=($val['pages']-1)*$val['rows'];
         $by=$val['members_id'];
         $where_statue="";
+        $where_refund="";
         $where_com_name="";
         if($val['order_statue']!=""){
             $where_statue=" and a.order_statue='{$val['order_statue']}'";
         }
         if($val['order_refund_flag']!=""){
-            $where_statue=" and a.order_refund_flag!=0";
-            if($val['order_refund_flag'] == "0"){
-                $where_statue=" and a.order_refund_flag=0";
+            $where_refund=" and a.order_refund_flag!=0 and a.order_refund_flag!=4";
+            if($val['order_refund_flag'] == '0'){
+                $where_refund=" and a.order_refund_flag='{$val['order_refund_flag']}'";
+            }else if($val['order_refund_flag'] == '4'){
+                $where_statue=" and (a.order_statue='{$val['order_statue']}'";
+                $where_refund=" or a.order_refund_flag='{$val['order_refund_flag']}')";
             }
         }
         if($val['commodity_name']!=""){
             $where_com_name=" and b.commodity_name like '%{$val['commodity_name']}%'";
         }
-        $sql_all="select a.* from `order` a left join orderitem b on a.order_id=b.order_id where a.members_id={$by}".$where_statue.$where_com_name. " group by  a.order_autoid order by a.created_time desc";
+        $sql_all="select a.* from `order` a left join orderitem b on a.order_id=b.order_id where a.members_id={$by}".$where_statue.$where_com_name.$where_refund. " group by  a.order_autoid order by a.created_time desc";
         $sql_limit=$sql_all." LIMIT $offset,$begin";
         $totalArr=$this->Sys_Model->execute_sql($sql_all);
+        $sql_code = $this->db->last_query();
         $TmpArr = $this->Sys_Model->execute_sql($sql_limit);
         //搜索订单明细表，并插入到TempArr
         foreach($TmpArr as $key=>$value){
@@ -602,6 +607,7 @@ class Charge extends HTY_service
         }
         $result['total']=count($totalArr);
         $result['data']=$TmpArr;
+        $result['code']=$sql_code;
         return $result;
     }
     /**
