@@ -197,6 +197,13 @@ class ProductDetailControl extends CI_Controller{
         http_data(200, $resultArr, $this);
     }
     public function update_aim_p_state(){
-
+        $type = $this->receive_data['aim_type'];
+        if($type === '活动'){
+            $res = $this->productdetail->update_activity_state($this->receive_data);
+        }else if($type === '课程'){
+            $res = $this->productdetail->update_course_state($this->receive_data);
+        }
+        $resultArr = build_resultArr('ACL000', TRUE, 0,'更新状态成功', []);
+        http_data(200, $resultArr, $this);
     }
 }

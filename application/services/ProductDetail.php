@@ -69,9 +69,15 @@ class ProductDetail extends HTY_service{
         return $this->Sys_Model->table_seleRow("course_id as id,course_name as name",'course',[]);
     }
     public function update_activity_state($data){
-
+        $where = array('activity_id'=>$data['aim_id']);
+        $update = array(
+            'activity_status'=>$data['aim_state']);
+        return $this->Sys_Model->table_updateRow("activity",$update,$where);
     }
     public function update_course_state($data){
-
+        $where = array('course_id'=>$data['aim_id']);
+        $update = array(
+            'course_status'=>$data['aim_state']);
+        return $this->Sys_Model->table_updateRow("course",$update,$where);
     }
 }
