@@ -29,7 +29,6 @@ class Commodity extends HTY_service
 		$indData['a']['commodity_created_by'] = $by;
 		$indData['a']['commodity_created_time'] = date('Y-m-d H:i');
         $indData['a']['commodity_status'] = "未发布";
-        $indData['a']['commodity_type'] = "预赛";
 		$postname=$this->Sys_Model->table_seleRow('commodity_id',"commodity",array('commodity_name'=>$indData['a']['commodity_name']), $like=array());
 		if ($postname){
 			$result = [];
@@ -65,7 +64,7 @@ class Commodity extends HTY_service
     {
         $resultvalue = array();
 
-        $dir = './public/comgraphic';
+        $dir = './public/commoditygraphic';
         $pptfiles=[];
         if (is_dir($dir) or mkdir($dir)) {
 
@@ -96,7 +95,7 @@ class Commodity extends HTY_service
     //获取图片详情
     public function getimagedetail($pic){
         $resultvalue=array();
-        $dir_original='./public/comgraphic';
+        $dir_original='./public/commoditygraphic';
 
         $handler = opendir($dir_original);
         if($handler){
@@ -115,7 +114,7 @@ class Commodity extends HTY_service
     {
         $resultvalue = array();
 
-        $dir = './public/comcover';
+        $dir = './public/commoditycover';
         $pptfiles=[];
         if (is_dir($dir) or mkdir($dir)) {
             $files=$_FILES;
@@ -144,7 +143,7 @@ class Commodity extends HTY_service
     //获取图片封面
     public function getimagecover($pic){
         $resultvalue=array();
-        $dir_original='./public/comcover';
+        $dir_original='./public/commoditycover';
         //2、循环的读取目录下的所有文件
         //其中$filename = readdir($handler)是每次循环的时候将读取的文件名赋值给$filename，为了不陷于死循环，所以还要让$filename !== false。一定要用!==，因为如果某个文件名如果叫’0′，或者某些被系统认为是代表false，用!=就会停止循环*/
         $handler = opendir($dir_original);
@@ -159,21 +158,92 @@ class Commodity extends HTY_service
             return $resultvalue;
         }
     }
-    //获取商品规格表
-    public function getspecification($searchWhere = [])
+    //商品规格图片上传
+    public function uploadpicture()
+    {
+        $resultvalue = array();
+        $dir = './public/commoditygraphic';
+        if (is_dir($dir) or mkdir($dir)) {
+            $files=$_FILES;
+            $filename=time().rand(111,999). '.jpg';
+            $file_tmp = $files['file0']['tmp_name'];
+            $savePath=$dir."/".$filename;
+            $move_result = move_uploaded_file($file_tmp, $savePath);//上传文件
+            if ($move_result) {//上传成功
+                $pptfiles=$filename;
+            } else {
+                //上传失败
+                return $resultvalue;
+            }
+            $resultvalue['commodity_image']=$pptfiles;
+            return $resultvalue;
+        }
+    }
+    //获取商品规格图片
+    public function getpicture($pic){
+        $resultvalue=array();
+        $dir_original='./public/commoditygraphic';
+        $handler = opendir($dir_original);
+        if($handler){
+            $dir_original=str_replace('.','',$dir_original);
+            $dirfilename = $this->config->item('localpath') . $dir_original .'/'.$pic['commodity_image'] ;
+            //5、关闭目录
+            closedir($handler);
+            $resultvalue['name']=$pic['commodity_image'];
+            $resultvalue['url']=$dirfilename;
+            $resultvalue['raw']['type']="image/jpg";
+            return $resultvalue;
+        }
+    }
+    //后端获取商品规格表
+    public function getspecificationtwo($searchWhere = [])
     {
         $deptArr = [];
-        $begin = $searchWhere['rows'];
-        $offset = ($searchWhere['pages'] - 1) * $searchWhere['rows'];
+        $begin = 10;
+        $offset = 0;
         $where=[];
         $where['commodity_id'] = $searchWhere['commodity_id'];
 //        $competition_final=$this->Sys_Model->table_seleRow('competition_id,competition_final',"competition", $wheredata=array("competition_id"=>$searchWhere['competition_id']), $likedata=array());
 //        $searchWhere['competition_final']=$competition_final[0]['competition_final'];
-        $totalArr = $this->Sys_Model->table_seleRow('commodity_spec_name,competition_size,amount ', "commodity_spec", $where, $likedata = array());
-        $results = $this->Sys_Model->table_seleRow_limit("commodity_spec_name,competition_size,amount ", "commodity_spec", $where, $likedata = array(), $begin, $offset);
+        $totalArr = $this->Sys_Model->table_seleRow('commodity_spec_name,commodity_size,amount,commodity_image,commodity_price  ', "commodity_spec", $where, $likedata = array());
+        $results = $this->Sys_Model->table_seleRow_limit("commodity_spec_name,commodity_size,amount,commodity_image,commodity_price ", "commodity_spec", $where, $likedata = array(), $begin, $offset);
+        $deptArr['alldata']=$totalArr;
+        $deptArr['data']=$results;
         $deptArr['total'] = count($totalArr);//这个商品的规格
-        $deptArr['data'] = $results;
-        $deptArr["alldata"] = $totalArr;
+        return $deptArr;
+    }
+
+    //获取商品规格表
+    public function getspecification($searchWhere = [])
+    {
+        $deptArr = [];
+        $begin = 10;
+        $offset = 0;
+        $where=[];
+        $ggg=[];
+        $hhh=[];
+        $where['commodity_id'] = $searchWhere['commodity_id'];
+//        $competition_final=$this->Sys_Model->table_seleRow('competition_id,competition_final',"competition", $wheredata=array("competition_id"=>$searchWhere['competition_id']), $likedata=array());
+//        $searchWhere['competition_final']=$competition_final[0]['competition_final'];
+        $totalArr = $this->Sys_Model->table_seleRow('commodity_spec_id,commodity_spec_name,commodity_size,amount,commodity_image,commodity_price  ', "commodity_spec", $where, $likedata = array());
+        foreach ($totalArr as $row){
+            if ($row['commodity_image']!=null) {
+                // 添加缩略图路径
+                $row['commodity_image'] = $this->config->item('localpath') . '/public/commoditygraphic/' . $row['commodity_image'];
+            }
+            array_push($ggg,$row);
+        }
+        $results = $this->Sys_Model->table_seleRow_limit("commodity_spec_id,commodity_spec_name,commodity_size,amount,commodity_image,commodity_price ", "commodity_spec", $where, $likedata = array(), $begin, $offset);
+        foreach ($results as $row){
+            if ($row['commodity_image']!=null){
+                // 添加缩略图路径
+                $row['commodity_image']=$this->config->item('localpath') . '/public/commoditygraphic/'.$row['commodity_image'] ;
+            }
+            array_push($hhh,$row);
+        }
+        $deptArr['alldata']=$ggg;
+        $deptArr['data']=$hhh;
+        $deptArr['total'] = count($totalArr);//这个商品的规格
         return $deptArr;
     }
 
@@ -197,16 +267,34 @@ class Commodity extends HTY_service
                 $deptTmpArr=$this->get_commoditydata($pages, $rows,$where);
             }
 
+
         return $deptTmpArr;
 
     }
 
-//搜索商品与商品规格
+    public function getphonecommodity($searchWhere = []) //查询到商品表
+    {
+        $deptTmpArr=$this->getspecification($searchWhere);
+        $result=[];
+        $hhh=[];
+        $ggg=[];
+        foreach ($deptTmpArr['alldata'] as $row){
+            array_push($hhh,$row['commodity_spec_name']);
+            array_push($ggg,$row['commodity_size']);
+        }
+        $result['one']=array_flip(array_flip($hhh));
+        $result['two']=array_flip(array_flip($ggg));
+        $result['three']=$deptTmpArr['alldata'];
+        return $result;
+
+    }
+
+//搜索商品
     public function get_commoditydata($pages,$rows,$wheredata){
         //Select SQL_CALC_FOUND_ROWS UserId,UserName,base_dept.DeptName,Mobile,Birthday,UserStatus,UserEmail,Sex,Remark,IsAdmin,UserRol,UserPost,base_user.CREATED_TIME from base_user,base_dept where base_user.DeptId = base_dept.DeptId
         $offset=($pages-1)*$rows;//计算偏移量
-        $sql_query="Select DISTINCT commodity_id,commodity_name,commodity_describe,commodity_status,commodity_type,commodity_graphic,commodity_cover,commodity_price,commodity_ishome,
-            commodity_integral from commodity  where  1=1 ";
+        $sql_query="Select DISTINCT commodity_id,commodity_name,commodity_describe,commodity_status,commodity_type,commodity_graphic,commodity_cover,commodity_price,commodity_ishome,commodity_carriage,
+            commodity_integral,commodity_created_time from commodity  where  1=1 ";
         $sql_query_where=$sql_query.$wheredata;
         if($wheredata!="")
         {
@@ -305,7 +393,6 @@ class Commodity extends HTY_service
             return $returnInfo;
         }
 	}
-
 //下拉商品
     public function showcommodity()
     {

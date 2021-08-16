@@ -9,4 +9,4 @@ $route['wps/sfl'] = 'CustomeInterface/sendFinl';//发送总决赛
 $route['wps/getsfl'] = 'CustomeInterface/getSignfinl';//获取预赛报名表无进入总决赛名单
 $route['wps/excel'] = 'CustomeInterface/ControlExcel';//获取预赛报名表无进入总决赛名单
 $route['wps/zip'] = 'CustomeInterface/Controlzip';//获取报名照片数据
-$route['wps/image'] = 'CustomeInterface/image3';//获取报名照片数据
+$route['wps/express'] = 'CustomeInterface/getExpress';// 获取物流信息

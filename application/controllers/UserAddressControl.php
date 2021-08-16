@@ -60,7 +60,7 @@ class UserAddressControl extends CI_Controller{
         }
         //判断当前接收的收获地址是否是默认地址
         if($this->receive_data['address_default'] == 1){
-            $res_default = $this->address->setDefaultAddress($user_id);
+            $res_default = $this->useraddress->setDefaultAddress($user_id);
 //            if(!$res_default){
 //                $resultArr = build_resultArr('SA002', false, 0,'设置默认地址失败', null );
 //                http_data(200, $resultArr, $this);
@@ -68,9 +68,9 @@ class UserAddressControl extends CI_Controller{
         }
         $type = $this->receive_data['type'];
         if($type === 'add'){
-            $res = $this->address->addAddress($this->receive_data);
+            $res = $this->useraddress->addAddress($this->receive_data);
         }else{
-            $res = $this->address->editAddress($this->receive_data);
+            $res = $this->useraddress->editAddress($this->receive_data);
         }
         if ($res === false) {
             $resultArr = build_resultArr('SA002', false, 0,'保存用户收获地址失败', null );

@@ -4,6 +4,7 @@ class EnrollControl extends CI_Controller{
     public function __construct(){
         parent::__construct();
         $this->load->helper('tool');
+        $this->load->helper('qrcode');
         $this->load->service('Enroll');
         $receive = file_get_contents('php://input');
         $this->receive_data = json_decode($receive, true);
@@ -131,9 +132,19 @@ class EnrollControl extends CI_Controller{
         http_data(200, $resultArr, $this);
     }
     public function del_sign_info(){
-        $res_enroll = $this->enroll->del_sign_info($this->receive_data);
+        $res_price = $this->enroll->get_order_price($this->receive_data);
+        if(!$res_price){
+            $resultArr = build_resultArr('DSI001', FALSE, 0,'获取订单信息失败', null );
+            http_data(200, $resultArr, $this);
+        }
+        $price = $res_price[0]['order_price'];
+        if($price === "0"){
+            $res_enroll = $this->enroll->del_sign_info_free($this->receive_data);
+        }else{
+            $res_enroll = $this->enroll->del_sign_info($this->receive_data);
+        }
         if(!$res_enroll){
-            $resultArr = build_resultArr('DSI001', FALSE, 0,'删除报名失败，请检查后重试', null );
+            $resultArr = build_resultArr('DSI002', FALSE, 0,'删除报名失败，请检查后重试', null );
             http_data(200, $resultArr, $this);
         }
         $resultArr = build_resultArr('DSI000', TRUE, 0,'更新文件成功', null );
@@ -230,25 +241,27 @@ class EnrollControl extends CI_Controller{
             $resultArr = build_resultArr('GAI002', FALSE, 0,'获取活动报名表信息错误', [] );
             http_data(200, $resultArr, $this);
         }
+        $res[0]['activity_cover']="https://hftx.fzz.cn/public/activitycover/".$res[0]['activity_cover'];
+        $res[0]['activity_graphic']="https://hftx.fzz.cn/public/activitygraphic/".$res[0]['activity_graphic'];
         $resultArr = build_resultArr('GAI000', TRUE, 0,'获取活动信息成功', [$res[0],$res_index]);
         http_data(200, $resultArr, $this);
     }
     public function get_activity_form(){
-//        $this->receive_data['order_info']['order_id'] = get_random_tool(4).time();
-//        $this->receive_data['order_info']['order_customer_name'] = $this->receive_data['form']['sign_name'];
-//        $this->receive_data['order_info']['order_customer_phone'] = $this->receive_data['form']['sign_phone'];
-//        $this->receive_data['order_info']['created_by'] = 'HFTX_Sys';
-//        $this->receive_data['order_info']['created_time'] = date('Y-m-d H:i:s');
-//        $this->receive_data['form']['sign_competition_id'] = $this->receive_data['order_info']['order_capid'];
-//        $this->receive_data['form']['competition_name'] = $this->receive_data['order_info']['order_product'];
-//        $this->receive_data['form']['sign_created_by'] = 'HFTX_Sys';
-//        $this->receive_data['form']['sign_created_time'] = date('Y-m-d H:i:s');
-//        $this->receive_data['form']['sign_statue'] = '未付款';
-//        if($this->receive_data['order_info']['order_statue'] === '进行中'){
-//            $this->receive_data['form']['sign_statue'] = '已付款';
-//        }
         $this->receive_data = $this->set_receive_data($this->receive_data);
-        $res = $this->enroll->set_order_enroll_data( $this->receive_data);
+        $res_exits = $this->enroll->check_exits_state($this->receive_data);
+        if($res_exits){
+            $resultArr = build_resultArr('GAF001', FALSE, 0,'重复报名', [] );
+            http_data(200, $resultArr, $this);
+        }
+        $type = $this->receive_data['order_info']['order_type'];
+        $aim_id = $this->receive_data['order_info']['order_capid'];
+        if($type === '活动'){
+            $this->receive_data['sql_code'] = "UPDATE activity SET activity_number_limit = activity_number_limit-1 WHERE activity_id = ".$aim_id;
+
+        }else{
+            $this->receive_data['sql_code'] = "UPDATE course SET course_number_limit = course_number_limit-1 WHERE course_id = ".$aim_id;
+        }
+        $res = $this->enroll->set_order_enroll_data($this->receive_data);
         if(!$res){
             $resultArr = build_resultArr('GAF001', FALSE, 0,'活动报名失败', [] );
             http_data(200, $resultArr, $this);
@@ -268,6 +281,8 @@ class EnrollControl extends CI_Controller{
             $resultArr = build_resultArr('GCI002', FALSE, 0,'获取课程报名表信息错误', [] );
             http_data(200, $resultArr, $this);
         }
+        $res[0]['course_cover']="https://hftx.fzz.cn/public/coursecover/".$res[0]['course_cover'];
+        $res[0]['course_graphic']="https://hftx.fzz.cn/public/coursegraphic/".$res[0]['course_graphic'];
         $resultArr = build_resultArr('GAI000', TRUE, 0,'获取课程信息成功', [$res[0],$res_index]);
         http_data(200, $resultArr, $this);
     }
@@ -285,6 +300,23 @@ class EnrollControl extends CI_Controller{
             http_data(200, $resultArr, $this);
         }
         $resultArr = build_resultArr('GCF000', TRUE, 0,'培训报名息成功', []);
+        http_data(200, $resultArr, $this);
+    }
+    public function get_aim_sign(){
+        $pages = $this->receive_data['pages'];
+        $rows = $this->receive_data['rows'];
+        $this->receive_data['offset'] = ($pages-1) * $rows;// 计算偏移量
+        $res = $this->enroll->get_sign_data($this->receive_data);
+        if(!$res){
+            $resultArr = build_resultArr('GAS001', FALSE, 0,'获取目标信息错误', null );
+            http_data(200, $resultArr, $this);
+        }
+        $res_num = $this->enroll->get_sign_data_num($this->receive_data);
+        $data = array(
+            'data'=>json_encode($res),
+            'total'=>(int)$res_num[0]['count(*)']
+        );
+        $resultArr = build_resultArr('GAS000', TRUE, 0,'获取目标信息成功', $data);
         http_data(200, $resultArr, $this);
     }
     public function set_receive_data($data): array
@@ -308,5 +340,39 @@ class EnrollControl extends CI_Controller{
             $data['order_info']['order_customer_phone'] = $data['user_info']['members_phone'];
         }
         return $data;
+    }
+    public function prize(){
+        $url_token = 'https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=wx61088edf470bc1f4&secret=542a4b5583a35cce1361e60751d22e67';
+        $res_token = httpRequest($url_token);
+        if(!$res_token){
+            $resultArr = build_resultArr('MSG001', FALSE, 0,'FALSE_token', []);
+            http_data(200, $resultArr, $this);
+        }
+        $ACCESS_TOKEN = json_decode($res_token,true)['access_token'];
+        $url_msg = 'https://api.weixin.qq.com/cgi-bin/message/subscribe/send?access_token='.$ACCESS_TOKEN;
+        $curl_data = array(
+            "touser"=>$this->receive_data['openid'],
+            "template_id"=>'3eq1xPXmV3O9NRfFBTwh8tV26ybdoEpjegsNUpE7XiA',
+            "data"=>array(
+                "thing1"=> array(
+                    "value"=> $this->receive_data['msg_title']
+                ),
+                "thing2"=> array(
+                    "value"=> $this->receive_data['prize_name']
+                ),
+                "phone_number3"=> array(
+                    "value"=> $this->receive_data['server_phone']
+                ),
+                "name4"=> array(
+                    "value"=> $this->receive_data['server_name']
+                ),
+                "thing5"=> array(
+                    "value"=> $this->receive_data['tip']
+                ),
+            )
+        );
+        $res_msg = httpRequest($url_msg,json_encode($curl_data),'POST');
+        $resultArr = build_resultArr('MSG000', TRUE, 0,'OK', [$res_msg,http_build_query($curl_data)]);
+        http_data(200, $resultArr, $this);
     }
 }

@@ -155,6 +155,10 @@ class ProductDetailControl extends CI_Controller{
             $resultArr = build_resultArr('GCI001', FALSE, 0,'获取课程信息错误', null );
             http_data(200, $resultArr, $this);
         }
+        for($i=0;$i<count($res);$i++){
+            $res[$i]['course_cover']="https://hftx.fzz.cn/public/coursecover/".$res[$i]['course_cover'];
+            $res[$i]['course_graphic']="https://hftx.fzz.cn/public/coursegraphic/".$res[$i]['course_graphic'];
+        }
         $resultArr = build_resultArr('GCI000', TRUE, 0,'获取课程信息成功', $res);
         http_data(200, $resultArr, $this);
     }
@@ -164,6 +168,8 @@ class ProductDetailControl extends CI_Controller{
             $resultArr = build_resultArr('GCI101', FALSE, 0,'获取目标课程信息错误', null );
             http_data(200, $resultArr, $this);
         }
+        $res[0]['course_cover']="https://hftx.fzz.cn/public/coursecover/".$res[0]['course_cover'];
+        $res[0]['course_graphic']="https://hftx.fzz.cn/public/coursegraphic/".$res[0]['course_graphic'];
         $resultArr = build_resultArr('GCI100', TRUE, 0,'获取目标课程信息成功', $res[0]);
         http_data(200, $resultArr, $this);
     }
@@ -175,5 +181,22 @@ class ProductDetailControl extends CI_Controller{
         }
         $resultArr = build_resultArr('GUC000', TRUE, 0,'获取目标课程信息成功', json_encode($res));
         http_data(200, $resultArr, $this);
+    }
+    public function get_ac_list(){
+        $type = $this->receive_data['type'];
+        if($type === '活动'){
+            $res = $this->productdetail->get_activity_list($this->receive_data);
+        }else{
+            $res = $this->productdetail->get_course_list($this->receive_data);
+        }
+        if(!$res){
+            $resultArr = build_resultArr('ACL001', FALSE, 0,'获取目标信息错误', null );
+            http_data(200, $resultArr, $this);
+        }
+        $resultArr = build_resultArr('ACL000', TRUE, 0,'获取目标信息成功', json_encode($res));
+        http_data(200, $resultArr, $this);
+    }
+    public function update_aim_p_state(){
+
     }
 }

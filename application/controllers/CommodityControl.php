@@ -50,8 +50,6 @@ class CommodityControl extends CI_Controller
 
 		}
 	}
-
-
 	/**
 	 * Notes:新增记录
 	 * User: ljx
@@ -72,7 +70,6 @@ class CommodityControl extends CI_Controller
 
 
 	}
-
 
     public function Uploaddetail()
     {
@@ -115,6 +112,31 @@ class CommodityControl extends CI_Controller
     {
         $this->hedVerify();//前置验证
         $result = $this->commodity->getimagecover($this->dataArr);
+        if (count($result)> 0) {
+            $resulArr = build_resulArr('D000', true, '显示成功', json_encode($result));
+            http_data(200, $resulArr, $this);
+        } else {
+            $resulArr = build_resulArr('D002', false, '显示失败', []);
+            http_data(200, $resulArr, $this);
+        }
+    }
+
+    public function uploadpicture()
+    {
+        $result = $this->commodity->uploadpicture($this->dataArr);
+        if (count($result )> 0) {
+            $resulArr = build_resulArr('D000', true, '导入成功', json_encode($result));
+            http_data(200, $resulArr, $this);
+        } else {
+            $resulArr = build_resulArr('D002', false, '导入失败', []);
+            http_data(200, $resulArr, $this);
+        }
+    }
+
+    public function getpicture()
+    {
+        $this->hedVerify();//前置验证
+        $result = $this->commodity->getpicture($this->dataArr);
         if (count($result)> 0) {
             $resulArr = build_resulArr('D000', true, '显示成功', json_encode($result));
             http_data(200, $resulArr, $this);
@@ -188,6 +210,38 @@ class CommodityControl extends CI_Controller
 
     }
 
+    public function getspecificationtwoRow()
+    {
+        $keys="commodity_id,rows,pages";
+        $this->hedVerify($keys);
+        $result = $this->commodity->getspecificationtwo($this->dataArr);
+        if (count($result) > 0) {
+            $resulArr = build_resulArr('D000', true, '获取成功', json_encode($result));
+            http_data(200, $resulArr, $this);
+        } else {
+            $resulArr = build_resulArr('D003', false, '获取失败', []);
+            http_data(200, $resulArr, $this);
+        }
+
+
+    }
+
+    public function getphonecommodity()
+    {
+        $keys="commodity_id";
+        $this->hedVerify($keys);
+        $result = $this->commodity->getphonecommodity($this->dataArr);
+        if (count($result) > 0) {
+            $resulArr = build_resulArr('D000', true, '获取成功', json_encode($result));
+            http_data(200, $resulArr, $this);
+        } else {
+            $resulArr = build_resulArr('D003', false, '获取失败', []);
+            http_data(200, $resulArr, $this);
+        }
+
+
+    }
+
 	public function delRow()
 	{
 		$keys="commodity_id";
@@ -217,8 +271,6 @@ class CommodityControl extends CI_Controller
             http_data(200, $resulArr, $this);
         }
     }
-
-
 //下拉
     public function showRow()
     {

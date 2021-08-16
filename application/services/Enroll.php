@@ -94,6 +94,31 @@ class Enroll extends HTY_service{
         $update = array('vote_image'=>$data['dir_name']);
         return $this->Sys_Model->table_updateRow("vote",$update,$where);
     }
+    public function get_order_price($data){
+        $where = array('order_autoid'=>$data['sign_order_id']);
+        return $this->Sys_Model->table_seleRow("order_price",'order',$where);
+    }
+    public function del_sign_info_free($data): bool
+    {
+        $returnInfo = true;
+        $this->db->trans_begin();
+        $where_enroll = array(
+            'sign_id'=>$data['sign_id']
+        );
+        $where_order = array(
+            'order_autoid'=>$data['sign_order_id']
+        );
+        $this->Sys_Model->table_del('sign_up',$where_enroll);
+        $this->Sys_Model->table_del('order',$where_order);
+        $row=$this->db->affected_rows();
+        if (($this->db->trans_status() === FALSE) && $row<=0){
+            $this->db->trans_rollback();
+            $returnInfo = false;
+        }else{
+            $this->db->trans_commit();
+        }
+        return $returnInfo;
+    }
     public function del_sign_info($data): bool
     {
         $returnInfo = true;
@@ -182,6 +207,15 @@ class Enroll extends HTY_service{
         $where = array('course_id'=>$data['course_id']);
         return $this->Sys_Model->table_seleRow("*",'course',$where);
     }
+    public function check_exits_state($data){
+        $where = array(
+            'sign_name'=>$data['order_info']['order_customer_name'],
+            'sign_phone'=>$data['order_info']['order_customer_phone'],
+            'sign_competition_id'=>$data['order_info']['order_capid'],
+            'sign_statue'=>'已付款'
+        );
+        return $this->Sys_Model->table_seleRow("*",'sign_up',$where);
+    }
     public function set_order_enroll_data($data): bool
     {
         $returnInfo = true;
@@ -189,6 +223,7 @@ class Enroll extends HTY_service{
         $this->Sys_Model->table_addRow("order",$data['order_info']);
         $data['form']['sign_order_id'] = $this->db->insert_id();
         $this->Sys_Model->table_addRow("sign_up",$data['form']);
+        $this->Sys_Model->execute_sql($data['sql_code'],2);
         $row=$this->db->affected_rows();
         if (($this->db->trans_status() === FALSE) && $row<=0){
             $this->db->trans_rollback();
@@ -202,5 +237,13 @@ class Enroll extends HTY_service{
         $where = array('members_openid'=>$data['order_info']['members_id']);
         $update = array('members_integral'=>(int)$data['user_point']);
         return $this->Sys_Model->table_updateRow("members",$update,$where);
+    }
+    public function get_sign_data($data){
+        $where = array('sign_competition_id'=>$data['aim_id']);
+        return $this->Sys_Model->table_seleRow_limit("*","sign_up",$where,[],$data['rows'],$data['offset'],"sign_created_time,sign_id","DESC");
+    }
+    public function get_sign_data_num($data){
+        $where = array('sign_competition_id'=>$data['aim_id']);
+        return $this->Sys_Model->table_seleRow("count(*)","sign_up",$where);
     }
 }

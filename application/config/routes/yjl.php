@@ -1,5 +1,5 @@
 <?php
-$route['pay/login'] = 'Wx  PayControl/login';// 测试登陆
+$route['pay/login'] = 'WxPayControl/login';// 测试登陆
 $route['pay/prepay'] = 'WxPayControl/get_prepay_id';// 获取prepay_id数据
 $route['pay/update'] = 'WxPayControl/update_order_info';// 未付款订单付款后更新订单
 
@@ -12,6 +12,8 @@ $route['p/refund'] = 'ProductDetailControl/set_order_refund';// 判断是否可�
 $route['p/c_list'] = 'ProductDetailControl/get_course_info';// 获取课程列表
 $route['p/c_aim_info'] = 'ProductDetailControl/get_aim_course_info';// 获取目标课程信息
 $route['p/get_my_c'] = 'ProductDetailControl/get_user_course';// 获取用户参加课程信息
+$route['p/list_ac'] = 'ProductDetailControl/get_ac_list';// 获取目标信息列表
+$route['p/state'] = 'ProductDetailControl/update_aim_p_state';// 更新目标数据的状态
 
 $route['e/upload_i'] = 'EnrollControl/upload_img';// 上传照片
 $route['e/update_d'] = 'EnrollControl/update_img_dir';// 修改选手照片文件夹
@@ -29,6 +31,8 @@ $route['e/act'] = 'EnrollControl/get_activity_info';// 获取活动信息
 $route['e/act_f'] = 'EnrollControl/get_activity_form';// 获取活动信息
 $route['e/c_f'] = 'EnrollControl/get_course_info';// 获取课程信息
 $route['e/course_f'] = 'EnrollControl/set_course_form';// 获取课程信息
+$route['e/prize'] = 'EnrollControl/prize';// 发送中奖消息
+$route['e/sign'] = 'EnrollControl/get_aim_sign';// 获取报名信息
 
 $route['yac/list'] = 'UserAddressControl/getUserAddress'; //获取用户地址列表
 $route['yac/aim'] = 'UserAddressControl/getAimAddress'; //获取目标收货地址

@@ -25,33 +25,63 @@ class wProductStore extends HTY_service
      */
     public function getHomeProductList()
     {
-
         $product_list=[];
         $appdata=[];
 
         //获取比赛首页显示
-        $competition_list = $this->Custome_Model->table_seleRow_limit("*", 'competition',['competition_ishome'=>1,'competition_status != '=>"未发布"],[],8,0,'competition_created_time','DESC');
-
+        $competition_list = $this->Custome_Model->table_seleRow_limit("*", 'competition',['competition_ishome'=>1,'competition_status != '=>"未发布"],[],20,0,'competition_created_time','DESC');
         //获取活动首页显示
-
-        $activity_list = $this->Custome_Model->table_seleRow_limit("*", 'activity',['activity_ishome'=>1],[],1,0,'activity_created_time','DESC');
+        $activity_list = $this->Custome_Model->table_seleRow_limit("*", 'activity',['activity_ishome'=>1,'activity_status != '=>"未发布"],[],20,0,'activity_created_time','DESC');
         //获取培训课程首页显示
-
-        $course_list = $this->Custome_Model->table_seleRow_limit("*", 'course',['course_ishome'=>1],[],1,0,'course_created_time','DESC');
+        $course_list = $this->Custome_Model->table_seleRow_limit("*", 'course',['course_ishome'=>1,'course_status != '=>"未发布"],[],20,0,'course_created_time','DESC');
         //获取商城首页显示
+        $product_list = $this->Custome_Model->table_seleRow_limit("*", 'commodity',['commodity_ishome'=>1,'commodity_status'=>"已发布"],[],20,0,'commodity_created_time','DESC');
 
-        $product_list = $this->Custome_Model->table_seleRow_limit("*", 'commodity',['commodity_ishome'=>1],[],1,0,'commodity_created_time','DESC');
-
-
-
+        if(count($competition_list)===0 && count($activity_list)===0 && count($course_list)===0 && count($product_list)===0){
+            $appdata['Data']=[];
+            $appdata["ErrorCode"]="nothing-data";
+            $appdata["ErrorMessage"]="无数据";
+            $appdata["Success"]=false;
+            $appdata["Status_Code"]="WPS201";
+        }else{
+            if(count($competition_list)>0){
+                for($i=0;$i<count($competition_list);$i++){
+                    $competition_list[$i]['competition_cover']="https://hftx.fzz.cn/public/comcover/".$competition_list[$i]['competition_cover'];
+                }
+            }
+            if(count($activity_list)>0){
+                for($i=0;$i<count($activity_list);$i++){
+                    $activity_list[$i]['activity_graphic']="https://hftx.fzz.cn/public/activitygraphic/".$activity_list[$i]['activity_graphic'];
+                    $activity_list[$i]['activity_cover']="https://hftx.fzz.cn/public/activitycover/".$activity_list[$i]['activity_cover'];
+                }
+            }
+            if(count($course_list)>0){
+                for($i=0;$i<count($course_list);$i++){
+                    $course_list[$i]['course_graphic']="https://hftx.fzz.cn/public/coursegraphic/".$course_list[$i]['course_graphic'];
+                    $course_list[$i]['course_cover']="https://hftx.fzz.cn/public/coursecover/".$course_list[$i]['course_cover'];
+                }
+            }
+            if(count($product_list)>0){
+                for($i=0;$i<count($product_list);$i++){
+                    $product_list[$i]['commodity_graphic']="https://hftx.fzz.cn/public/commoditygraphic/".$product_list[$i]['commodity_graphic'];
+                    $product_list[$i]['commodity_cover']="https://hftx.fzz.cn/public/commoditycover/".$product_list[$i]['commodity_cover'];
+                }
+            }
+            $appdata['Data']['competition']=$competition_list;
+            $appdata['Data']['activity']=$activity_list;
+            $appdata['Data']['course']=$course_list;
+            $appdata['Data']['product']=$product_list;
+            $appdata["ErrorCode"]="";
+            $appdata["ErrorMessage"]="信息获取成功";
+            $appdata["Success"]=true;
+            $appdata["Status_Code"]="WPS200";
+        }
+        /*
         if(count($competition_list)>0 && count($activity_list)>0 && count($course_list)>0 && count($product_list)>0)
         {
             for($i=0;$i<count($competition_list);$i++){
                 $competition_list[$i]['competition_cover']="https://hftx.fzz.cn/public/comcover/".$competition_list[$i]['competition_cover'];
             }
-//            $competition_list[0]['competition_cover']="https://hftx.fzz.cn/public/comcover/".$competition_list[0]['competition_cover'];
-//            $competition_list[1]['competition_cover']="https://hftx.fzz.cn/public/comcover/".$competition_list[1]['competition_cover'];
-//            $competition_list[2]['competition_cover']="https://hftx.fzz.cn/public/comcover/".$competition_list[2]['competition_cover'];
 
             $activity_list[0]['competition_cover']="https://hftx.fzz.cn/public/activitycover/".$activity_list[0]['activity_cover'];
 
@@ -77,12 +107,8 @@ class wProductStore extends HTY_service
             $appdata["Success"]=false;
             $appdata["Status_Code"]="WPS201";
         }
-
-
-
-
+        */
         return $appdata;
-        
     }
 
 
@@ -268,7 +294,7 @@ class wProductStore extends HTY_service
             }
             else
             {
-                $appdata['Data']=[];
+                $appdata['Data']=[[]];
                 $appdata["ErrorCode"]="";
                 $appdata["ErrorMessage"]="无报名表数据";
                 $appdata["Success"]=false;
@@ -277,7 +303,7 @@ class wProductStore extends HTY_service
         }
         else
         {
-            $appdata['Data']=[];
+            $appdata['Data']=[[]];
             $appdata["ErrorCode"]="";
             $appdata["ErrorMessage"]="无报名表数据";
             $appdata["Success"]=false;
@@ -630,6 +656,79 @@ class wProductStore extends HTY_service
     }
 
 
+        //查询物流信息
+        public function getExpressinfo($num)
+        {
+            $appdata=[];
+            // 云市场分配的密钥Id
+            $secretId = 'AKIDev8S7xbdkgdGpzb3R3kBzlwavn4eApcWQ0tv';
+            // 云市场分配的密钥Key
+            $secretKey = 'j753yOF5i073nwr6bGfn4lyxWmwE7UCqunUqh5Cp';
+            $source = 'market';
+    
+            // 签名
+            $datetime = gmdate('D, d M Y H:i:s T');
+            $signStr = sprintf("x-date: %s\nx-source: %s", $datetime, $source);
+            $sign = base64_encode(hash_hmac('sha1', $signStr, $secretKey, true));
+            $auth = sprintf('hmac id="%s", algorithm="hmac-sha1", headers="x-date x-source", signature="%s"', $secretId, $sign);
+    
+            // 请求方法
+            $method = 'POST';
+            // 请求头
+            $headers = array(
+                'X-Source' => $source,
+                'X-Date' => $datetime,
+                'Authorization' => $auth,
+            );
+            // 查询参数
+            $queryParams = array (
+                'express_id' => $num,
+                'express_name' => '',
+            );
+            // body参数（POST方法下）
+            $bodyParams = array (
+            );
+            // url参数拼接
+            $url = 'https://service-m1lhix6w-1253285064.gz.apigw.tencentcs.com/release/qxt_express/';
+            if (count($queryParams) > 0) {
+                $url .= '?' . http_build_query($queryParams);
+            }
+    
+            $ch = curl_init();
+            curl_setopt($ch, CURLOPT_URL, $url);
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            curl_setopt($ch, CURLOPT_TIMEOUT, 60);
+            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER,false);
+            curl_setopt($ch, CURLOPT_SSL_VERIFYHOST,false);
+            curl_setopt($ch, CURLOPT_CUSTOMREQUEST, $method);
+            curl_setopt($ch, CURLOPT_HTTPHEADER, array_map(function ($v, $k) {
+                return $k . ': ' . $v;
+            }, array_values($headers), array_keys($headers)));
+            if (in_array($method, array('POST', 'PUT', 'PATCH'), true)) {
+                curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($bodyParams));
+            }
+    
+            $data = curl_exec($ch);
+            if (curl_errno($ch)) {
+    
+                $appdata['Data']=curl_error($ch);
+                $appdata["ErrorCode"]="";
+                $appdata["ErrorMessage"]="";
+                $appdata["Success"]=true;
+                $appdata["Status_Code"]="CAD200";
+            } else {
+                $appdata['Data']=json_decode($data,true);
+                $appdata["ErrorCode"]="";
+                $appdata["ErrorMessage"]="";
+                $appdata["Success"]=true;
+                $appdata["Status_Code"]="CAD200";
+    
+            }
+            curl_close($ch);
+    
+            return $appdata;
+    
+        }
 
 
 

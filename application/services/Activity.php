@@ -33,18 +33,18 @@ class Activity extends HTY_service
 		if ($postname){
 			$results = [];
 		    return $results;
-	}else{
-            $result=$this->Sys_Model->table_addRow("activity", $indData, 1);
+        }else{
+                $result=$this->Sys_Model->table_addRow("activity", $indData, 1);
 
-            return $result;
-		}
-	}
+                return $result;
+            }
+        }
     //图片详情上传
     public function imageuploaddetail()
     {
         $resultvalue = array();
 
-        $dir = './public/comgraphic';
+        $dir = './public/activitygraphic';
         $pptfiles=[];
         if (is_dir($dir) or mkdir($dir)) {
             $files=$_FILES;
@@ -70,7 +70,7 @@ class Activity extends HTY_service
     //获取图片详情
     public function getimagedetail($pic){
         $resultvalue=array();
-        $dir_original='./public/comgraphic';
+        $dir_original='./public/activitygraphic';
         $handler = opendir($dir_original);
         if($handler){
             $dir_original=str_replace('.','',$dir_original);
@@ -89,7 +89,7 @@ class Activity extends HTY_service
     {
         $resultvalue = array();
 
-        $dir = './public/comcover';
+        $dir = './public/activitycover';
         $pptfiles=[];
         if (is_dir($dir) or mkdir($dir)) {
             $files=$_FILES;
@@ -116,7 +116,7 @@ class Activity extends HTY_service
     //获取图片封面
     public function getimagecover($pic){
         $resultvalue=array();
-        $dir_original='./public/comcover';
+        $dir_original='./public/activitycover';
         //2、循环的读取目录下的所有文件
         //其中$filename = readdir($handler)是每次循环的时候将读取的文件名赋值给$filename，为了不陷于死循环，所以还要让$filename !== false。一定要用!==，因为如果某个文件名如果叫’0′，或者某些被系统认为是代表false，用!=就会停止循环*/
         $handler = opendir($dir_original);
@@ -162,6 +162,10 @@ class Activity extends HTY_service
         $ss=$this->db->last_query();
         $r_total=$this->db->query($sql_query_total)->result_array();
         $row_arr=$query->result_array();
+        for($i=0;$i<count($r_total);$i++){
+            $r_total[$i]['activity_cover']="https://hftx.fzz.cn/public/activitycover/".$r_total[$i]['activity_cover'];
+            $r_total[$i]['activity_graphic']="https://hftx.fzz.cn/public/activitygraphic/".$r_total[$i]['activity_graphic'];
+        }
         $result['total']=count($r_total);//获取总行数
         $result["data"] = $row_arr;
         $result["alldata"] = $r_total;

@@ -70,6 +70,7 @@ $route['cmm/publish'] = 'CommodityControl/publishRow';//发布商品（上架）
 $route['cmm/finally'] = 'CommodityControl/finallycommodityRow';//下架商品
 $route['cmm/getspec'] = 'CommodityControl/getspecificationRow';//获取商品规格
 $route['cmm/getspectwo'] = 'CommodityControl/getspecificationtwoRow';//获取商品规格
+$route['rrr/get'] = 'ReferrerControl/getRow';//获取推荐人表
 
 
 

@@ -62,4 +62,16 @@ class ProductDetail extends HTY_service{
         $sql="select $field from `order` a left join course b on a.order_capid=b.course_id where a.members_id='{$data['openid']}' and order_type='培训' order by a.order_datetime desc";
         return $this->Sys_Model->execute_sql($sql);
     }
+    public function get_activity_list($data){
+        return $this->Sys_Model->table_seleRow("activity_id as id,activity_name as name",'activity',[]);
+    }
+    public function get_course_list($data){
+        return $this->Sys_Model->table_seleRow("course_id as id,course_name as name",'course',[]);
+    }
+    public function update_activity_state($data){
+
+    }
+    public function update_course_state($data){
+
+    }
 }

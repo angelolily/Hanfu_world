@@ -24,7 +24,7 @@ class UserAddress extends HTY_service{
      */
     public function getAimAddress($val){
         $where = array('address_id'=>$val['address_id']);
-        $field = 'address_province,address_city,address_county,address_street,address_detail,address_default,address_recipient,address_phone';
+        $field = 'address_province,address_city,address_county,address_street,address_detail,address_default,address_user_name,address_user_phone';
         return $this->Sys_Model->table_seleRow($field,'address',$where);
     }
 
