@@ -11,7 +11,7 @@ $route['p/check'] = 'ProductDetailControl/check_order_info';// 判断是否可�
 $route['p/refund'] = 'ProductDetailControl/set_order_refund';// 判断是否可以退款
 $route['p/c_list'] = 'ProductDetailControl/get_course_info';// 获取课程列表
 $route['p/c_aim_info'] = 'ProductDetailControl/get_aim_course_info';// 获取目标课程信息
-$route['p/get_my_c'] = 'ProductDetailControl/get_user_course';// 获取用户参加课程信息
+$route['p/my_c'] = 'ProductDetailControl/get_user_course';// 获取用户参加课程信息
 $route['p/list_ac'] = 'ProductDetailControl/get_ac_list';// 获取目标信息列表
 $route['p/state'] = 'ProductDetailControl/update_aim_p_state';// 更新目标数据的状态
 

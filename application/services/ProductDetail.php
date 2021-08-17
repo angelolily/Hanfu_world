@@ -58,9 +58,13 @@ class ProductDetail extends HTY_service{
         return $this->Sys_Model->table_seleRow("*",'course',$where);
     }
     public function get_user_course($data){
-        $field="a.order_autoid,a.order_datetime,a.order_statue,b.course_name,b.course_describe,b.course_cover,b.course_beginDate,b.course_endDate,b.course_signPrice,b.course_status";
-        $sql="select $field from `order` a left join course b on a.order_capid=b.course_id where a.members_id='{$data['openid']}' and order_type='培训' order by a.order_datetime desc";
-        return $this->Sys_Model->execute_sql($sql);
+        $res_arr = array();
+        $field="a.order_autoid,a.order_datetime,a.order_statue,a.created_time,b.course_id,b.course_name,b.course_describe,b.course_cover,b.course_beginDate,b.course_endDate,b.course_signPrice,b.course_status";
+        $sql="select $field from `order` a left join course b on a.order_capid=b.course_id where a.members_id='{$data['openid']}' and order_type='培训' order by a.created_time desc";
+        $res_arr['order_info'] = $this->Sys_Model->execute_sql($sql);
+        $sql="select a.created_time,b.* from `order` a left join course b on a.order_capid=b.course_id where a.members_id='{$data['openid']}' and order_type='培训' order by a.created_time desc";
+        $res_arr['course_info'] = $this->Sys_Model->execute_sql($sql);
+        return $res_arr;
     }
     public function get_activity_list($data){
         return $this->Sys_Model->table_seleRow("activity_id as id,activity_name as name",'activity',[]);

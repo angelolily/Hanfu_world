@@ -179,6 +179,10 @@ class ProductDetailControl extends CI_Controller{
             $resultArr = build_resultArr('GUC001', FALSE, 0,'获取目标课程信息错误', null );
             http_data(200, $resultArr, $this);
         }
+        for($i=0;$i<count($res['course_info']);$i++){
+            $res['course_info'][$i]['course_cover']="https://hftx.fzz.cn/public/coursecover/".$res['course_info'][$i]['course_cover'];
+            $res['course_info'][$i]['course_graphic']="https://hftx.fzz.cn/public/coursegraphic/".$res['course_info'][$i]['course_graphic'];
+        }
         $resultArr = build_resultArr('GUC000', TRUE, 0,'获取目标课程信息成功', json_encode($res));
         http_data(200, $resultArr, $this);
     }
