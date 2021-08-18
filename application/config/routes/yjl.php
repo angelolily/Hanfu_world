@@ -16,6 +16,7 @@ $route['p/list_ac'] = 'ProductDetailControl/get_ac_list';// 获取目标信息�
 $route['p/state'] = 'ProductDetailControl/update_aim_p_state';// 更新目标数据的状态
 $route['p/point_s'] = 'ProductDetailControl/update_user_point';// 更新用户积分
 $route['p/point_g'] = 'ProductDetailControl/gte_user_point';// 获取用户积分
+$route['p/commodity'] = 'ProductDetailControl/gte_commodity_info';// 获取用户积分
 
 $route['e/upload_i'] = 'EnrollControl/upload_img';// 上传照片
 $route['e/update_d'] = 'EnrollControl/update_img_dir';// 修改选手照片文件夹

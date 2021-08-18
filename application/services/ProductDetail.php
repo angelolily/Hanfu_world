@@ -91,4 +91,8 @@ class ProductDetail extends HTY_service{
     public function gte_user_point($data){
 
     }
+    public function gte_commodity_info($data){
+        $where = array('commodity_id'=>$data['commodity_id']);
+        return $this->Sys_Model->table_seleRow("*",'commodity',$where);
+    }
 }

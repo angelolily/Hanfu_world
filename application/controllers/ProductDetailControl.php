@@ -216,4 +216,15 @@ class ProductDetailControl extends CI_Controller{
     public function gte_user_point(){
 
     }
+    public function gte_commodity_info(){
+        $res = $this->productdetail->gte_commodity_info($this->receive_data);
+        if(!$res){
+            $resultArr = build_resultArr('GCI001', FALSE, 0,'获取目标商品信息错误', null );
+            http_data(200, $resultArr, $this);
+        }
+        $res[0]['commodity_cover']="https://hftx.fzz.cn/public/commoditycover/".$res[0]['commodity_cover'];
+        $res[0]['commodity_graphic']="https://hftx.fzz.cn/public/commoditygraphic/".$res[0]['commodity_graphic'];
+        $resultArr = build_resultArr('GCI000', TRUE, 0,'获取目标商品信息成功', $res[0]);
+        http_data(200, $resultArr, $this);
+    }
 }
