@@ -319,6 +319,15 @@ class EnrollControl extends CI_Controller{
         $resultArr = build_resultArr('GAS000', TRUE, 0,'获取目标信息成功', $data);
         http_data(200, $resultArr, $this);
     }
+    public function check_vote_data(){
+        $res = $this->enroll->check_vote_data($this->receive_data);
+        if(!$res){
+            $resultArr = build_resultArr('CVD001', FALSE, 0,'获取目标信息错误', null );
+            http_data(200, $resultArr, $this);
+        }
+        $resultArr = build_resultArr('CVD000', TRUE, 0,'获取目标信息成功', $res[0]['count(*)']);
+        http_data(200, $resultArr, $this);
+    }
     public function set_receive_data($data): array
     {
         $data['order_info']['order_id'] = get_random_tool(4).time();

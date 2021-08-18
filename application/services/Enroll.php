@@ -246,4 +246,11 @@ class Enroll extends HTY_service{
         $where = array('sign_competition_id'=>$data['aim_id']);
         return $this->Sys_Model->table_seleRow("count(*)","sign_up",$where);
     }
+    public function check_vote_data($data){
+        $where = array(
+            'competition_id'=>$data['competition_id'],
+            'DeptId'=>$data['DeptId']
+        );
+        return $this->Sys_Model->table_seleRow("count(*)","vote",$where);
+    }
 }

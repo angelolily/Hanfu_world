@@ -35,6 +35,7 @@ $route['e/c_f'] = 'EnrollControl/get_course_info';// 获取课程信息
 $route['e/course_f'] = 'EnrollControl/set_course_form';// 获取课程信息
 $route['e/prize'] = 'EnrollControl/prize';// 发送中奖消息
 $route['e/sign'] = 'EnrollControl/get_aim_sign';// 获取报名信息
+$route['e/c_vote'] = 'EnrollControl/check_vote_data';// 检查报名数据
 
 $route['yac/list'] = 'UserAddressControl/getUserAddress'; //获取用户地址列表
 $route['yac/aim'] = 'UserAddressControl/getAimAddress'; //获取目标收货地址
