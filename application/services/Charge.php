@@ -219,7 +219,7 @@ class Charge extends HTY_service
         $this->Sys_Model->execute_sql($sql,2);
         $new_date = array(
             'point_user_openid'=>$val['members_openid'],
-            'point_num'=>$point,
+            'point_num'=>'+'.$point,
             'point_source'=>$info[0]['activity_name'].'签到积分',
             'point_creat_time'=>date('Y-m-d H:i:s'),
         );

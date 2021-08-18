@@ -214,7 +214,13 @@ class ProductDetailControl extends CI_Controller{
 
     }
     public function gte_user_point(){
-
+        $res = $this->productdetail->gte_user_point($this->receive_data);
+        if(!$res){
+            $resultArr = build_resultArr('GUP001', FALSE, 0,'获取用户积分信息错误', null );
+            http_data(200, $resultArr, $this);
+        }
+        $resultArr = build_resultArr('GUP000', TRUE, 0,'获取用户积分信息成功', $res);
+        http_data(200, $resultArr, $this);
     }
     public function gte_commodity_info(){
         $res = $this->productdetail->gte_commodity_info($this->receive_data);
