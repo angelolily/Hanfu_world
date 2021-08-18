@@ -76,7 +76,8 @@ class ProductDetail extends HTY_service{
     public function update_activity_state($data){
         $where = array('activity_id'=>$data['aim_id']);
         $update = array(
-            'activity_status'=>$data['aim_state']);
+            'activity_status'=>$data['aim_state']
+        );
         return $this->Sys_Model->table_updateRow("activity",$update,$where);
     }
     public function update_course_state($data){
@@ -91,8 +92,8 @@ class ProductDetail extends HTY_service{
     public function gte_user_point($data){
 
     }
-    public function gte_commodity_info($data){
-        $where = array('commodity_id'=>$data['commodity_id']);
-        return $this->Sys_Model->table_seleRow("*",'commodity',$where);
+    public function gte_activity_info($data){
+        $where = array('activity_id'=>$data['activity_id']);
+        return $this->Sys_Model->table_seleRow("*",'activity',$where);
     }
 }

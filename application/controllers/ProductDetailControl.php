@@ -227,4 +227,15 @@ class ProductDetailControl extends CI_Controller{
         $resultArr = build_resultArr('GCI000', TRUE, 0,'获取目标商品信息成功', $res[0]);
         http_data(200, $resultArr, $this);
     }
+    public function gte_activity_info(){
+        $res = $this->productdetail->gte_activity_info($this->receive_data);
+        if(!$res){
+            $resultArr = build_resultArr('GAI001', FALSE, 0,'获取目标活动信息错误', null );
+            http_data(200, $resultArr, $this);
+        }
+        $res[0]['activity_cover']="https://hftx.fzz.cn/public/activitycover/".$res[0]['activity_cover'];
+        $res[0]['activity_graphic']="https://hftx.fzz.cn/public/activitygraphic/".$res[0]['activity_graphic'];
+        $resultArr = build_resultArr('GAI000', TRUE, 0,'获取目标活动信息成功', $res[0]);
+        http_data(200, $resultArr, $this);
+    }
 }
