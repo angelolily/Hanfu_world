@@ -10,10 +10,12 @@ $route['p/img'] = 'ProductDetailControl/get_img_url_arr';// 获取上传照片
 $route['p/check'] = 'ProductDetailControl/check_order_info';// 判断是否可以退款
 $route['p/refund'] = 'ProductDetailControl/set_order_refund';// 判断是否可以退款
 $route['p/c_list'] = 'ProductDetailControl/get_course_info';// 获取课程列表
-$route['p/c_aim_info'] = 'ProductDetailControl/get_aim_course_info';// 获取目标课程信息
+$route['p/c_info'] = 'ProductDetailControl/get_aim_course_info';// 获取课程信息
 $route['p/my_c'] = 'ProductDetailControl/get_user_course';// 获取用户参加课程信息
 $route['p/list_ac'] = 'ProductDetailControl/get_ac_list';// 获取目标信息列表
 $route['p/state'] = 'ProductDetailControl/update_aim_p_state';// 更新目标数据的状态
+$route['p/point_s'] = 'ProductDetailControl/update_user_point';// 更新用户积分
+$route['p/point_g'] = 'ProductDetailControl/gte_user_point';// 获取用户积分
 
 $route['e/upload_i'] = 'EnrollControl/upload_img';// 上传照片
 $route['e/update_d'] = 'EnrollControl/update_img_dir';// 修改选手照片文件夹

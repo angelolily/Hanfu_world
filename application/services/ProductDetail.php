@@ -57,7 +57,8 @@ class ProductDetail extends HTY_service{
         $where = array('course_id'=>$data['course_id']);
         return $this->Sys_Model->table_seleRow("*",'course',$where);
     }
-    public function get_user_course($data){
+    public function get_user_course($data): array
+    {
         $res_arr = array();
         $field="a.order_autoid,a.order_datetime,a.order_statue,a.created_time,b.course_id,b.course_name,b.course_describe,b.course_cover,b.course_beginDate,b.course_endDate,b.course_signPrice,b.course_status";
         $sql="select $field from `order` a left join course b on a.order_capid=b.course_id where a.members_id='{$data['openid']}' and order_type='培训' order by a.created_time desc";
@@ -83,5 +84,11 @@ class ProductDetail extends HTY_service{
         $update = array(
             'course_status'=>$data['aim_state']);
         return $this->Sys_Model->table_updateRow("course",$update,$where);
+    }
+    public function update_user_point($data){
+
+    }
+    public function gte_user_point($data){
+
     }
 }

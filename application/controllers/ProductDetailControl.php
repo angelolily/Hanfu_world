@@ -210,4 +210,10 @@ class ProductDetailControl extends CI_Controller{
         $resultArr = build_resultArr('ACL000', TRUE, 0,'更新状态成功', []);
         http_data(200, $resultArr, $this);
     }
+    public function update_user_point(){
+
+    }
+    public function gte_user_point(){
+
+    }
 }
