@@ -215,10 +215,10 @@ class Charge extends HTY_service
         $where_order = array('order_autoid'=>$val['order_autoid']);
         $update = array('order_statue'=>'已结束');
         $this->Sys_Model->table_updateRow("order",$update,$where_order);
-        $sql="update `members` set members_integral=members_integral+{$point} where members_id='{$val['members_openid']}'";
+        $sql="update `members` set members_integral=members_integral+{$point} where members_openid='{$val['members_openid']}'";
         $this->Sys_Model->execute_sql($sql,2);
         $new_date = array(
-            'point_user_poenid'=>$val['members_openid'],
+            'point_user_openid'=>$val['members_openid'],
             'point_num'=>$point,
             'point_source'=>$info[0]['activity_name'].'签到积分',
             'point_creat_time'=>date('Y-m-d H:i:s'),
