@@ -211,7 +211,9 @@ class ProductDetailControl extends CI_Controller{
         http_data(200, $resultArr, $this);
     }
     public function update_user_point(){
-
+        $this->productdetail->update_user_point($this->receive_data);
+        $resultArr = build_resultArr('UUP000', TRUE, 0,'获取用户积分信息成功', null);
+        http_data(200, $resultArr, $this);
     }
     public function gte_user_point(){
         $res = $this->productdetail->gte_user_point($this->receive_data);

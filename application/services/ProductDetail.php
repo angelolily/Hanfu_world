@@ -87,7 +87,13 @@ class ProductDetail extends HTY_service{
         return $this->Sys_Model->table_updateRow("course",$update,$where);
     }
     public function update_user_point($data){
-
+        $new_date = array(
+            'point_user_openid'=>$data['members_openid'],
+            'point_num'=>'-'.$data['point'],
+            'point_source'=>$data['name'].'抵扣积分',
+            'point_creat_time'=>date('Y-m-d H:i:s'),
+        );
+        $this->Sys_Model->table_addRow("point",$new_date);
     }
     public function gte_user_point($data){
         $where = array('point_user_openid'=>$data['openid']);
