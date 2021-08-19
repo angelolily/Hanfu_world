@@ -96,8 +96,10 @@ class ProductDetail extends HTY_service{
         $this->Sys_Model->table_addRow("point",$new_date);
     }
     public function gte_user_point($data){
-        $where = array('point_user_openid'=>$data['openid']);
-        return $this->Sys_Model->table_seleRow("*",'point',$where);
+        $sql = "SELECT * FROM point where point_user_openid = '{$data['openid']}' ORDER BY point_creat_time DESC ;";
+        return $this->Sys_Model->execute_sql($sql);
+//        $where = array('point_user_openid'=>$data['openid']);
+//        return $this->Sys_Model->table_seleRow("*",'point',$where);
     }
     public function gte_activity_info($data){
         $where = array('activity_id'=>$data['activity_id']);
