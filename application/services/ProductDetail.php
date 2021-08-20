@@ -51,7 +51,7 @@ class ProductDetail extends HTY_service{
         return $this->Sys_Model->table_seleRow("*",'base_parameter',$where);
     }
     public function get_course_info($data){
-        return $this->Sys_Model->table_seleRow("*",'course',[]);
+        return $this->Sys_Model->table_seleRow_limit("*", 'course',[],[],999,0,'course_created_time','DESC',["报名中","进行中"],"course_status");
     }
     public function get_aim_course_info($data){
         $where = array('course_id'=>$data['course_id']);

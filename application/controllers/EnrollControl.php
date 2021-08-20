@@ -76,7 +76,7 @@ class EnrollControl extends CI_Controller{
             http_data(200, $resultArr, $this);
         }
         $enroll_num = (int)$res_num[0]['amount'];
-        if($enroll_num<1){
+        if($enroll_num<=0){
             $resultArr = build_resultArr('SUB001', FALSE, 0,'报名人数已达上限', null );
             http_data(200, $resultArr, $this);
         }
@@ -93,6 +93,9 @@ class EnrollControl extends CI_Controller{
         $this->receive_data['order_pay_statue'] = $this->receive_data['sign_statue'];
         if($this->receive_data['sign_statue'] === '进行中'){
             $this->receive_data['order_pay_statue'] = '成功报名';
+        }
+        if(!isset($this->receive_data['form']['sign_phone'])){
+            $this->receive_data['form']['sign_phone'] = '';
         }
         $res_order = $this->enroll->set_order($this->receive_data);
         if(!$res_order){
