@@ -331,6 +331,15 @@ class EnrollControl extends CI_Controller{
         $resultArr = build_resultArr('CVD000', TRUE, 0,'获取目标信息成功', $res[0]['count(*)']);
         http_data(200, $resultArr, $this);
     }
+    public function update_user_info(){
+        $res = $this->enroll->update_user_info($this->receive_data);
+        if(!$res){
+            $resultArr = build_resultArr('GCF002', FALSE, 0,'更新用户信息失败', [] );
+            http_data(200, $resultArr, $this);
+        }
+        $resultArr = build_resultArr('GCF000', TRUE, 0,'更新用户信息成功', []);
+        http_data(200, $resultArr, $this);
+    }
     public function set_receive_data($data): array
     {
         $data['order_info']['order_id'] = get_random_tool(4).time();

@@ -40,6 +40,7 @@ $route['e/prize'] = 'EnrollControl/prize';// 发送中奖消息
 $route['e/sign'] = 'EnrollControl/get_aim_sign';// 获取报名信息
 $route['e/c_vote'] = 'EnrollControl/check_vote_data';// 检查报名数据
 $route['e/u_s_p'] = 'EnrollControl/update_share_user_point';// 更新推荐用户积分
+$route['e/u_s_i'] = 'EnrollControl/update_user_info';// 更新用户信息
 
 $route['yac/list'] = 'UserAddressControl/getUserAddress'; //获取用户地址列表
 $route['yac/aim'] = 'UserAddressControl/getAimAddress'; //获取目标收货地址

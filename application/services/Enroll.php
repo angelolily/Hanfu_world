@@ -253,4 +253,8 @@ class Enroll extends HTY_service{
         );
         return $this->Sys_Model->table_seleRow("count(*)","vote",$where);
     }
+    public function update_user_info($data){
+        $where = array('members_openid'=>$data['user_info']['members_openid']);
+        return $this->Sys_Model->table_updateRow("members",$data['user_info'],$where);
+    }
 }
