@@ -246,4 +246,20 @@ class ProductDetailControl extends CI_Controller{
         $resultArr = build_resultArr('GAI000', TRUE, 0,'获取目标活动信息成功', $res[0]);
         http_data(200, $resultArr, $this);
     }
+    public function update_share_user_point(){
+        $res_user = $this->productdetail->get_user_info($this->receive_data);
+        if(!$res_user){
+            $resultArr = build_resultArr('GAI001', FALSE, 0,'获取目标活动信息错误', null );
+            http_data(200, $resultArr, $this);
+        }
+        $user_info = $res_user[0];
+        $this->receive_data['referrer']['referrer_name'] = $user_info['members_name'];
+        $this->receive_data['referrer']['referrer_phone'] = $user_info['members_phone'];
+        $this->receive_data['referrer']['referrer_datetime'] = date('Y-m-d H:i:s');
+        $this->receive_data['referrer']['created_by'] = 'HFTX_Sys';
+        $this->receive_data['referrer']['referrer_datetime'] = date('Y-m-d H:i:s');
+        $res = $this->productdetail->update_share_user_point($this->receive_data);
+        $resultArr = build_resultArr('USP000', TRUE, 0,'目标用户奖励积分获取成功', null);
+        http_data(200, $resultArr, $this);
+    }
 }

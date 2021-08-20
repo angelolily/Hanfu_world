@@ -96,7 +96,7 @@ class Charge extends HTY_service
         }
         return [];
     }
- /**
+    /**
      * Notes:获取参赛人员表
      * User: hyr
      * DateTime: 2021/6/28 11:19
