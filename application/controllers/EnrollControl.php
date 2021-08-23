@@ -251,11 +251,11 @@ class EnrollControl extends CI_Controller{
     }
     public function get_activity_form(){
         $this->receive_data = $this->set_receive_data($this->receive_data);
-        $res_exits = $this->enroll->check_exits_state($this->receive_data);
-        if($res_exits){
-            $resultArr = build_resultArr('GAF001', FALSE, 0,'重复报名', [] );
-            http_data(200, $resultArr, $this);
-        }
+//        $res_exits = $this->enroll->check_exits_state($this->receive_data);
+//        if($res_exits){
+//            $resultArr = build_resultArr('GAF001', FALSE, 0,'重复报名', [] );
+//            http_data(200, $resultArr, $this);
+//        }
         $type = $this->receive_data['order_info']['order_type'];
         $aim_id = $this->receive_data['order_info']['order_capid'];
         if($type === '活动'){
