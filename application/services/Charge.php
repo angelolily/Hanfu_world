@@ -627,6 +627,19 @@ class Charge extends HTY_service
             if($val['order_points']){
                 $sql="update members set members_integral=members_integral+{$val['order_points']} where members_id = {$val['order_user']}";
                 $this->Sys_Model->execute_sql($sql,2);
+                $user_info = $this->Sys_Model->table_seleRow('*','members',['members_id'=>$val['order_user']]);
+                $passivity_user_info = $this->Sys_Model->table_seleRow('*','members',['members_id'=>$update['members_id']]);
+                $new_date_referrer = array(
+                    'referrer_passivity_name'=>$passivity_user_info[0]['members_name'],
+                    'referrer_passivity_phone'=>$passivity_user_info[0]['members_phone'],
+                    'referrer_name'=>$new_date_referrer[0]['members_name'],
+                    'referrer_phone'=>$new_date_referrer[0]['members_phone'],
+                    'referrer_projname'=>$update['order_product'],
+                    'referrer_datetime'=>date('Y-m-d H:i:s'),
+                    'created_by'=>'HFTX_Sys',
+                    'referrer_datetime'=>date('Y-m-d H:i:s'),
+                );
+                $this->Sys_Model->table_addRow("referrer",$new_date_referrer);
             }
         }
         return $result;
