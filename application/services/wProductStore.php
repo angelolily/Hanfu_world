@@ -29,13 +29,13 @@ class wProductStore extends HTY_service
         $appdata=[];
 
         //获取比赛首页显示
-        $competition_list = $this->Custome_Model->table_seleRow_limit("*", 'competition',['competition_ishome'=>1,'competition_status != '=>"未发布"],[],20,0,'competition_created_time','DESC');
+        $competition_list = $this->Custome_Model->table_seleRow_limit("*", 'competition',['competition_ishome'=>1],[],20,0,'competition_created_time','DESC',["报名中","进行中","评奖中"],"competition_status");
         //获取活动首页显示
-        $activity_list = $this->Custome_Model->table_seleRow_limit("*", 'activity',['activity_ishome'=>1,'activity_status != '=>"未发布"],[],20,0,'activity_created_time','DESC');
+        $activity_list = $this->Custome_Model->table_seleRow_limit("*", 'activity',['activity_ishome'=>1],[],20,0,'activity_created_time','DESC',["报名中","进行中"],"activity_status");
         //获取培训课程首页显示
-        $course_list = $this->Custome_Model->table_seleRow_limit("*", 'course',['course_ishome'=>1,'course_status != '=>"未发布"],[],20,0,'course_created_time','DESC');
+        $course_list = $this->Custome_Model->table_seleRow_limit("*", 'course',['course_ishome'=>1],[],20,0,'course_created_time','DESC',["报名中","进行中"],"course_status");
         //获取商城首页显示
-        $product_list = $this->Custome_Model->table_seleRow_limit("*", 'commodity',['commodity_ishome'=>1,'commodity_status'=>"已发布"],[],20,0,'commodity_created_time','DESC');
+        $product_list = $this->Custome_Model->table_seleRow_limit("*", 'commodity',['commodity_ishome'=>1],[],20,0,'commodity_created_time','DESC',["报名中","进行中"],"commodity_status");
 
         if(count($competition_list)===0 && count($activity_list)===0 && count($course_list)===0 && count($product_list)===0){
             $appdata['Data']=[];
@@ -147,7 +147,7 @@ class wProductStore extends HTY_service
 
 
             $order_list=$this->Custome_Model->table_seleRow_limit("*","competition",
-                $oid,$like,10,0,"competition_created_time,competition_id","DESC");
+                $oid,$like,10,0,"competition_created_time,competition_id","DESC",["报名中","进行中","评奖中"],"competition_status");
 
 
             if(count($order_list)>0)
