@@ -51,7 +51,7 @@ class ProductDetail extends HTY_service{
         return $this->Sys_Model->table_seleRow("*",'base_parameter',$where);
     }
     public function get_course_info($data){
-        return $this->Sys_Model->table_seleRow_limit("*", 'course',[],[],999,0,'course_created_time','DESC',["报名中","进行中"],"course_status");
+        return $this->Sys_Model->table_seleRow_limit("*", 'course',[],[],999,0,'course_created_time','DESC',["报名中","进行中","已结束"],"course_status");
     }
     public function get_aim_course_info($data){
         $where = array('course_id'=>$data['course_id']);
@@ -106,32 +106,5 @@ class ProductDetail extends HTY_service{
     public function get_user_info($data){
         $where = array('members_openid'=>$data['openid']);
         return $this->Sys_Model->table_seleRow("*",'members',$where);
-    }
-    public function update_share_user_point($data): bool
-    {
-        $returnInfo = true;
-        $this->db->trans_begin();
-        // 更新用户积分
-        $sql_user = "UPDATE members SET members_integral = members_integral+{$data['num']} WHERE members_openid = {$data['openid']}";
-        $this->Sys_Model->execute_sql($sql_user,2);
-        // 插入积分表
-        $new_date_point = array(
-            'point_user_openid'=>$data['openid'],
-            'point_num'=>'-'.$data['num'],
-            'point_source'=>$data['name'],
-            'point_creat_time'=>date('Y-m-d H:i:s'),
-        );
-        $this->Sys_Model->table_addRow("point",$new_date_point);
-        // 插入推荐人表
-        $new_date_referrer = $data['referrer'];
-        $this->Sys_Model->table_addRow("referrer",$new_date_referrer);
-        $row=$this->db->affected_rows();
-        if (($this->db->trans_status() === FALSE) && $row<=0){
-            $this->db->trans_rollback();
-            $returnInfo = false;
-        }else{
-            $this->db->trans_commit();
-        }
-        return $returnInfo;
     }
 }

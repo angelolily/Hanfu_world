@@ -291,6 +291,7 @@ class EnrollControl extends CI_Controller{
     }
     public function set_course_form(){
         $this->receive_data = $this->set_receive_data($this->receive_data);
+        $this->receive_data['sql_code'] = "UPDATE course SET course_number_limit = course_number_limit-1 WHERE course_id = ".$this->receive_data['order_info']['order_capid'];
         $res = $this->enroll->set_order_enroll_data( $this->receive_data);
         if(!$res){
             $resultArr = build_resultArr('GCF001', FALSE, 0,'培训报名失败', [] );
@@ -298,7 +299,7 @@ class EnrollControl extends CI_Controller{
         }
         $this->receive_data['user_point'] = (int)$this->receive_data['user_point']+(int)$this->receive_data['course_signIntegral'];
         $res_p = $this->enroll->update_user_point($this->receive_data);
-        if(!$res){
+        if(!$res_p){
             $resultArr = build_resultArr('GCF002', FALSE, 0,'更新用户积分失败', [] );
             http_data(200, $resultArr, $this);
         }
@@ -329,6 +330,23 @@ class EnrollControl extends CI_Controller{
             http_data(200, $resultArr, $this);
         }
         $resultArr = build_resultArr('CVD000', TRUE, 0,'获取目标信息成功', $res[0]['count(*)']);
+        http_data(200, $resultArr, $this);
+    }
+    public function update_share_user_point(){
+        $res_user = $this->enroll->get_user_info($this->receive_data);
+        if(!$res_user){
+            $resultArr = build_resultArr('GAI001', FALSE, 0,'获取目标活动信息错误', null );
+            http_data(200, $resultArr, $this);
+        }
+        $user_info = $res_user[0];
+        $this->receive_data['referrer']['referrer_name'] = $user_info['members_name'];
+        $this->receive_data['referrer']['referrer_phone'] = $user_info['members_phone'];
+        $this->receive_data['referrer']['referrer_datetime'] = date('Y-m-d H:i:s');
+        $this->receive_data['referrer']['created_by'] = 'HFTX_Sys';
+        $this->receive_data['referrer']['created_time'] = date('Y-m-d H:i:s');
+        $this->receive_data['referrer']['referrer_datetime'] = date('Y-m-d H:i:s');
+        $res = $this->enroll->update_share_user_point($this->receive_data);
+        $resultArr = build_resultArr('USP000', TRUE, 0,'目标用户奖励积分获取成功', null);
         http_data(200, $resultArr, $this);
     }
     public function update_user_info(){

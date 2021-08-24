@@ -233,10 +233,54 @@ class Enroll extends HTY_service{
         }
         return $returnInfo;
     }
+    public function get_user_info($data){
+        $where = array('members_openid'=>$data['openid']);
+        return $this->Sys_Model->table_seleRow("*",'members',$where);
+    }
+    public function update_share_user_point($data): bool
+    {
+        $returnInfo = true;
+        $this->db->trans_begin();
+        // 更新用户积分
+        $sql_user = "UPDATE members SET members_integral = members_integral+{$data['num']} WHERE members_openid = '{$data['openid']}'";
+        $this->Sys_Model->execute_sql($sql_user,2);
+        // 插入积分表
+        $new_date_point = array(
+            'point_user_openid'=>$data['openid'],
+            'point_num'=>'-'.$data['num'],
+            'point_source'=>$data['name'],
+            'point_creat_time'=>date('Y-m-d H:i:s'),
+        );
+        $this->Sys_Model->table_addRow("point",$new_date_point);
+        // 插入推荐人表
+        $new_date_referrer = $data['referrer'];
+        $this->Sys_Model->table_addRow("referrer",$new_date_referrer);
+        $row=$this->db->affected_rows();
+        if (($this->db->trans_status() === FALSE) && $row<=0){
+            $this->db->trans_rollback();
+            $returnInfo = false;
+        }else{
+            $this->db->trans_commit();
+        }
+        return $returnInfo;
+    }
     public function update_user_point($data){
-        $where = array('members_openid'=>$data['order_info']['members_id']);
+        $num = (int)$data['user_point'];
+        $openid = $data['order_info']['members_id'];
+        $sql =
+            "UPDATE members SET members_integral = "
+            .$num
+            ." WHERE members_openid = '"
+            .$openid
+            ."';";
+        return $this->Sys_Model->execute_sql($sql,2);
+        /*
+        $where = array(
+            'members_openid'=>$data['order_info']['members_id']
+        );
         $update = array('members_integral'=>(int)$data['user_point']);
         return $this->Sys_Model->table_updateRow("members",$update,$where);
+        */
     }
     public function get_sign_data($data){
         $where = array('sign_competition_id'=>$data['aim_id']);
