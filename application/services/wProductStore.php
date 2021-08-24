@@ -35,7 +35,7 @@ class wProductStore extends HTY_service
         //获取培训课程首页显示
         $course_list = $this->Custome_Model->table_seleRow_limit("*", 'course',['course_ishome'=>1],[],20,0,'course_created_time','DESC',["报名中","进行中"],"course_status");
         //获取商城首页显示
-        $product_list = $this->Custome_Model->table_seleRow_limit("*", 'commodity',['commodity_ishome'=>1],[],20,0,'commodity_created_time','DESC',["报名中","进行中"],"commodity_status");
+        $product_list = $this->Custome_Model->table_seleRow_limit("*", 'commodity',['commodity_ishome'=>1],[],20,0,'commodity_created_time','DESC',[],"commodity_status");
 
         if(count($competition_list)===0 && count($activity_list)===0 && count($course_list)===0 && count($product_list)===0){
             $appdata['Data']=[];
