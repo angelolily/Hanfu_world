@@ -26,7 +26,6 @@ class WxPayControl extends CI_Controller{
             $msg = $result['return_msg'];
         }
         if(isset($result['result_code'])){
-            $msg = $result['result_code'];
             if($result['result_code'] === 'SUCCESS'){
                 $appId = $result['appid'];
                 $nonceStr = $result['nonce_str'];
