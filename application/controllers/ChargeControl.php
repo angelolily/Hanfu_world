@@ -108,7 +108,7 @@ class ChargeControl extends CI_Controller{
      */
     public function sign(){
         $result = $this->charge->sign($this->receive_data);
-        if ($result) {
+        if ($result || $result == 0) {
             $resultArr = build_resultArr('sg000', true, 0,'签到成功', $result);
             http_data(200, $resultArr, $this);
         } else {

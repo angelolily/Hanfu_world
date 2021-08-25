@@ -217,7 +217,7 @@ class Charge extends HTY_service
         $this->Sys_Model->table_updateRow("order",$update,$where_order);
         $where_sign = array('sign_order_id'=>$val['order_autoid']);
         $update_sign = array('sign_statue'=>'签到成功');
-        $this->Sys_Model->table_updateRow("sign_up",$update,$where_sign);
+        $this->Sys_Model->table_updateRow("sign_up",$update_sign,$where_sign);
         $sql="update `members` set members_integral=members_integral+{$point} where members_openid='{$val['members_openid']}'";
         $this->Sys_Model->execute_sql($sql,2);
         $new_date = array(
