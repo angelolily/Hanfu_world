@@ -33,12 +33,12 @@ class Activity extends HTY_service
 		if ($postname){
 			$results = [];
 		    return $results;
-        }else{
-                $result=$this->Sys_Model->table_addRow("activity", $indData, 1);
+	}else{
+            $result=$this->Sys_Model->table_addRow("activity", $indData, 1);
 
-                return $result;
-            }
-        }
+            return $result;
+		}
+	}
     //图片详情上传
     public function imageuploaddetail()
     {
@@ -132,11 +132,11 @@ class Activity extends HTY_service
         }
     }
 //获取
-    public function getactivity($searchWhere = [])
+    public function getactivity($searchWhere = []) //查询到赛事表
     {
             $where = "";
             if (count($searchWhere) > 0) {
-                if ($searchWhere['activity_id'] != '') {
+                if ($searchWhere['activity_id'] != '') {//赛事ID  下拉
                     $where = $where . " and activity_id in('{$searchWhere['activity_id']}')";
                 }
                 $pages = $searchWhere['pages'];
@@ -212,6 +212,14 @@ class Activity extends HTY_service
     public function finallyactivity($postId = [])
     {
         $where['activity_status']="已结束";
+        $result=$this->Sys_Model->table_updateRow('activity', $where, array('activity_id' => $postId['activity_id']));
+        return $result;
+    }
+
+    //下架
+    public function lowactivity($postId = [])
+    {
+        $where['activity_status']="未发布";
         $result=$this->Sys_Model->table_updateRow('activity', $where, array('activity_id' => $postId['activity_id']));
         return $result;
     }
