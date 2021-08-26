@@ -260,10 +260,10 @@ class EnrollControl extends CI_Controller{
         $aim_id = $this->receive_data['order_info']['order_capid'];
         if($type === '活动'){
             $this->receive_data['sql_code'] = "UPDATE activity SET activity_number_limit = activity_number_limit-1 WHERE activity_id = ".$aim_id;
-
         }else{
             $this->receive_data['sql_code'] = "UPDATE course SET course_number_limit = course_number_limit-1 WHERE course_id = ".$aim_id;
         }
+        $this->receive_data['form']['sign_type'] = '活动';
         $res = $this->enroll->set_order_enroll_data($this->receive_data);
         if(!$res){
             $resultArr = build_resultArr('GAF001', FALSE, 0,'活动报名失败', [] );
@@ -291,8 +291,9 @@ class EnrollControl extends CI_Controller{
     }
     public function set_course_form(){
         $this->receive_data = $this->set_receive_data($this->receive_data);
+        $this->receive_data['form']['sign_type'] = '培训';
         $this->receive_data['sql_code'] = "UPDATE course SET course_number_limit = course_number_limit-1 WHERE course_id = ".$this->receive_data['order_info']['order_capid'];
-        $res = $this->enroll->set_order_enroll_data( $this->receive_data);
+        $res = $this->enroll->set_order_enroll_data($this->receive_data);
         if(!$res){
             $resultArr = build_resultArr('GCF001', FALSE, 0,'培训报名失败', [] );
             http_data(200, $resultArr, $this);
