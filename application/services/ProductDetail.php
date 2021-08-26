@@ -107,4 +107,8 @@ class ProductDetail extends HTY_service{
         $where = array('members_openid'=>$data['openid']);
         return $this->Sys_Model->table_seleRow("*",'members',$where);
     }
+    public function gte_commodity_info($data){
+        $where = array('commodity_id'=>$data['commodity_id']);
+        return $this->Sys_Model->table_seleRow("*",'commodity',$where);
+    }
 }
