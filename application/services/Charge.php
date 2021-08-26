@@ -588,7 +588,7 @@ class Charge extends HTY_service
         if($val['order_refund_flag']!=""){
             $where_refund=" and a.order_refund_flag!=0 and a.order_refund_flag!=4";
             if($val['order_refund_flag'] == '0'){
-                $where_refund=" and a.order_refund_flag='{$val['order_refund_flag']}'";
+                $where_refund=" and (a.order_refund_flag=0 or a.order_refund_flag is null)";
             }else if($val['order_refund_flag'] == '4'){
                 $where_statue=" and (a.order_statue='{$val['order_statue']}'";
                 $where_refund=" or a.order_refund_flag='{$val['order_refund_flag']}')";
