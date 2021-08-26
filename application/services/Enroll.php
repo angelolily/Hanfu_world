@@ -18,6 +18,7 @@ class Enroll extends HTY_service{
     }
     public function set_enroll($data){
         $enroll = $data['form'];
+        $enroll['sign_type'] = '比赛';
         $enroll['sign_competition_id'] = $data['competition_id'];
         $enroll['competition_name'] = $data['competition_name'];
         $enroll['DeptId'] = $data['DeptId'];
