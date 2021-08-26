@@ -283,11 +283,17 @@ class Enroll extends HTY_service{
         */
     }
     public function get_sign_data($data){
-        $where = array('sign_competition_id'=>$data['aim_id']);
+        $where = array(
+            'sign_type'=>$data['type'],
+            'sign_competition_id'=>$data['aim_id']
+        );
         return $this->Sys_Model->table_seleRow_limit("*","sign_up",$where,[],$data['rows'],$data['offset'],"sign_created_time,sign_id","DESC");
     }
     public function get_sign_data_num($data){
-        $where = array('sign_competition_id'=>$data['aim_id']);
+        $where = array(
+            'sign_type'=>$data['type'],
+            'sign_competition_id'=>$data['aim_id']
+        );
         return $this->Sys_Model->table_seleRow("count(*)","sign_up",$where);
     }
     public function check_vote_data($data){
