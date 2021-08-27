@@ -40,13 +40,6 @@ class Competition extends HTY_service
             $this->db->trans_begin();
             $this->Sys_Model->table_addRow("competition", $indData['a'], 1);
             $competition=$this->db->insert_id();
-            $row=$this->db->affected_rows();
-            if (($this->db->trans_status() === FALSE) && $row<=0){
-                $this->db->trans_rollback();
-                $returnInfo = false;
-            }else{
-                $this->db->trans_commit();
-            }
             $resluts=[];
             foreach ($indData['b'] as $row){
                 $row['created_by'] = $by;
@@ -96,23 +89,9 @@ class Competition extends HTY_service
             $where='competition_id='.$indData['a']['competition_id'];
             $indData['a']=$this->dataArr = bykey_reitem($indData['a'], 'competition_id');
             $this->Sys_Model->table_addRow("competition", $indData['a'], 1);
-            $row=$this->db->affected_rows();
-            if (($this->db->trans_status() === FALSE) && $row<=0){
-                $this->db->trans_rollback();
-                $returnInfo = false;
-            }else{
-                $this->db->trans_commit();
-            }
             $value['competition_final']=$this->db->insert_id();
             $value['competition_status'] = "评奖中";
             $this->Sys_Model->table_updateRow("competition",$value,$where);//更新预赛 总决赛字段
-            $row=$this->db->affected_rows();
-            if (($this->db->trans_status() === FALSE) && $row<=0){
-                $this->db->trans_rollback();
-                $returnInfo = false;
-            }else{
-                $this->db->trans_commit();
-            }
             $resluts=[];
             foreach ($indData['b'] as $row){
                 $row['relevancy_id'] = $value['competition_final'];
@@ -294,7 +273,7 @@ class Competition extends HTY_service
     public function get_Competitiondata($pages,$rows,$wheredata){
         //Select SQL_CALC_FOUND_ROWS UserId,UserName,base_dept.DeptName,Mobile,Birthday,UserStatus,UserEmail,Sex,Remark,IsAdmin,UserRol,UserPost,base_user.CREATED_TIME from base_user,base_dept where base_user.DeptId = base_dept.DeptId
         $offset=($pages-1)*$rows;//计算偏移量
-        $sql_query="Select DISTINCT competition.*
+        $sql_query="Select DISTINCT competition.*,specification.competition_sign_begin,specification.competition_sign_end
              from specification right JOIN competition on specification.relevancy_id=competition.competition_id  where  competition.competition_id is not
              null ";
         $sql_query_where=$sql_query.$wheredata;
@@ -353,21 +332,7 @@ class Competition extends HTY_service
                 $returnInfo = true;
                 $this->db->trans_begin();
 				$this->Sys_Model->table_updateRow('competition', $values['a'], array('competition_id' => $values['a']['competition_id']));
-                $row=$this->db->affected_rows();
-                if (($this->db->trans_status() === FALSE) && $row<=0){
-                    $this->db->trans_rollback();
-                    $returnInfo = false;
-                }else{
-                    $this->db->trans_commit();
-                }
                 $this->Sys_Model->table_del("specification",array('relevancy_id' => $values['a']['competition_id']));
-                $row=$this->db->affected_rows();
-                if (($this->db->trans_status() === FALSE) && $row<=0){
-                    $this->db->trans_rollback();
-                    $returnInfo = false;
-                }else{
-                    $this->db->trans_commit();
-                }
                 $resluts=[];
                 foreach ($values['b'] as $row){
                     $row['created_by'] = $by;
@@ -390,21 +355,9 @@ class Competition extends HTY_service
             $returnInfo = true;
             $this->db->trans_begin();
             $this->Sys_Model->table_updateRow('competition', $values['a'], array('competition_id' => $values['a']['competition_id']));
-            $row=$this->db->affected_rows();
-            if (($this->db->trans_status() === FALSE) && $row<=0){
-                $this->db->trans_rollback();
-                $returnInfo = false;
-            }else{
-                $this->db->trans_commit();
-            }
+
             $this->Sys_Model->table_del("specification",array('relevancy_id' => $values['a']['competition_id']));
-            $row=$this->db->affected_rows();
-            if (($this->db->trans_status() === FALSE) && $row<=0){
-                $this->db->trans_rollback();
-                $returnInfo = false;
-            }else{
-                $this->db->trans_commit();
-            }
+
             $resluts=[];
             foreach ($values['b'] as $row){
                 $row['created_by'] = $by;
