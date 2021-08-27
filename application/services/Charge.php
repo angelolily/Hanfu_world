@@ -192,7 +192,7 @@ class Charge extends HTY_service
      */
     public function getPa($val)
     {
-        $field="a.order_autoid,a.order_datetime,a.order_statue,b.activity_id,b.activity_name,b.activity_describe,b.activity_cover,b.activity_beginDate,b.activity_endDate,b.activity_signPrice,b.activity_status,b.activity_signIntegral";
+        $field="a.order_id,a.order_autoid,a.order_datetime,a.order_statue,b.activity_id,b.activity_name,b.activity_describe,b.activity_cover,b.activity_beginDate,b.activity_endDate,b.activity_signPrice,b.activity_status,b.activity_signIntegral";
         $sql="select $field from `order` a left join activity b on a.order_capid=b.activity_id where a.members_id='{$val['members_id']}' and order_type='活动' order by a.order_datetime desc";
         $allData=$this->Sys_Model->execute_sql($sql);
         $result=$allData;
@@ -590,6 +590,8 @@ class Charge extends HTY_service
             if($val['order_refund_flag'] == '0'){
                 $where_refund=" and (a.order_refund_flag=0 or a.order_refund_flag is null)";
             }else if($val['order_refund_flag'] == '4'){
+                $where_refund=" and a.order_refund_flag = 4";
+            }else if($val['order_refund_flag'] == '5'){
                 $where_statue=" and (a.order_statue='{$val['order_statue']}'";
                 $where_refund=" or a.order_refund_flag='{$val['order_refund_flag']}')";
             }
