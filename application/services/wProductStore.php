@@ -147,7 +147,7 @@ class wProductStore extends HTY_service
 
 
             $order_list=$this->Custome_Model->table_seleRow_limit("*","competition",
-                $oid,$like,10,0,"competition_created_time,competition_id","DESC",["报名中","进行中","评奖中"],"competition_status");
+                $oid,$like,99,0,"competition_created_time,competition_id","DESC",["报名中","进行中","评奖中"],"competition_status");
 
 
             if(count($order_list)>0)
@@ -405,8 +405,9 @@ class wProductStore extends HTY_service
                 $inser['members_id']=$item['members_id'];
                 $inser['order_capid']=$info['competition_final'];
                 $inser['order_deptid']=$unit_price[0]['DeptId'];
-                $inser['order_lg_cover']=$competition_data[0]['competition_cover'];
+                $inser['order_lg_cover']="https://hftx.fzz.cn/public/comcover/".$competition_data[0]['competition_cover'];
                 $inser['order_finals_flag']=1;
+                $inser['order_format']=$item['DeptName'];
 
 
                 //报名表
