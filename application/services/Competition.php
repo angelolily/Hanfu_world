@@ -273,9 +273,7 @@ class Competition extends HTY_service
     public function get_Competitiondata($pages,$rows,$wheredata){
         //Select SQL_CALC_FOUND_ROWS UserId,UserName,base_dept.DeptName,Mobile,Birthday,UserStatus,UserEmail,Sex,Remark,IsAdmin,UserRol,UserPost,base_user.CREATED_TIME from base_user,base_dept where base_user.DeptId = base_dept.DeptId
         $offset=($pages-1)*$rows;//计算偏移量
-        $sql_query="Select DISTINCT competition.*,specification.competition_sign_begin,specification.competition_sign_end
-             from specification right JOIN competition on specification.relevancy_id=competition.competition_id  where  competition.competition_id is not
-             null ";
+        $sql_query="Select DISTINCT s.spec_id, s.DeptName,s.competition_sign_begin,s.competition_sign_end, c.* from specification as s right JOIN competition as c on s.relevancy_id=c.competition_id where c.competition_id is not null ";
         $sql_query_where=$sql_query.$wheredata;
         if($wheredata!="")
         {
