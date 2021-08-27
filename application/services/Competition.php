@@ -246,10 +246,9 @@ class Competition extends HTY_service
     {
         if($searchWhere['DataScope']) {
             $where = "";
-
             if (count($searchWhere) > 0) {
                 if ($searchWhere['competition_id'] != '') {//赛事ID  下拉
-                    $where = $where . " and competition.competition_id in('{$searchWhere['competition_id']}')";
+                    $where = $where . " and c.competition_id in('{$searchWhere['competition_id']}')";
                 }
                 $pages = $searchWhere['pages'];
                 $rows = $searchWhere['rows'];
@@ -259,8 +258,13 @@ class Competition extends HTY_service
                     for ($i = 1; $i < count($all); $i++) {
                         $DeptId = $DeptId . ",'" . $all[$i] . "'";
                     }
-                    $where = $where . " and specification.DeptId  in({$DeptId})";
-                    $where = $where . " and competition.competition_status not in ('未发布')";
+                    $where = $where . " and s.DeptId  in({$DeptId})";
+                    $where = $where . " and c.competition_status not in ('未发布')";
+                }
+                if(isset($searchWhere['spec_id'])){
+                    if($searchWhere['spec_id'] != ''){
+                        $where = $where . " and s.spec_id = {$searchWhere['spec_id']}";
+                    }
                 }
                 $deptTmpArr=$this->get_Competitiondata($pages, $rows,$where);
             }
@@ -273,14 +277,14 @@ class Competition extends HTY_service
     public function get_Competitiondata($pages,$rows,$wheredata){
         //Select SQL_CALC_FOUND_ROWS UserId,UserName,base_dept.DeptName,Mobile,Birthday,UserStatus,UserEmail,Sex,Remark,IsAdmin,UserRol,UserPost,base_user.CREATED_TIME from base_user,base_dept where base_user.DeptId = base_dept.DeptId
         $offset=($pages-1)*$rows;//计算偏移量
-        $sql_query="Select DISTINCT s.spec_id, s.DeptName,s.competition_sign_begin,s.competition_sign_end, c.* from specification as s right JOIN competition as c on s.relevancy_id=c.competition_id where c.competition_id is not null ";
+        $sql_query="Select DISTINCT s.spec_id, s.DeptName,s.competition_sign_begin as s_sign_b,s.competition_sign_end as s_sign_e, c.* from specification as s right JOIN competition as c on s.relevancy_id=c.competition_id where c.competition_id is not null ";
         $sql_query_where=$sql_query.$wheredata;
         if($wheredata!="")
         {
             $sql_query=$sql_query_where;
         }
         $sql_query_total=$sql_query;
-        $sql_query=$sql_query." order by competition.competition_created_time desc limit ".$offset.",".$rows;
+        $sql_query=$sql_query." order by c.competition_created_time desc limit ".$offset.",".$rows;
         $query = $this->db->query($sql_query);
         $ss=$this->db->last_query();
         $r_total=$this->db->query($sql_query_total)->result_array();
