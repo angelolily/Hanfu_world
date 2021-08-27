@@ -250,7 +250,7 @@ class Charge extends HTY_service
      */
     public function getCommodity($val)
     {
-        $field="commodity_id,commodity_name,commodity_describe,commodity_graphic,commodity_type,commodity_cover,commodity_price,commodity_integral,commodity_carriage";
+        $field="*";
         $begin=$val['rows'];
         $offset=($val['pages']-1)*$val['rows'];
         $like=[];
