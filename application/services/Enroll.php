@@ -284,11 +284,17 @@ class Enroll extends HTY_service{
         */
     }
     public function get_sign_data($data){
-        $where = array(
-            'sign_type'=>$data['type'],
-            'sign_competition_id'=>$data['aim_id']
-        );
-        return $this->Sys_Model->table_seleRow_limit("*","sign_up",$where,[],$data['rows'],$data['offset'],"sign_created_time,sign_id","DESC");
+        $sql_code = "select s.*,o.order_id from sign_up as s left join `order` o on s.sign_order_id = o.order_autoid where sign_competition_id = {$data['aim_id']} and sign_type = '{$data['type']}'";
+        if($data['type'] === '活动'){
+            $sql_code = "select s.*,o.order_id,p.point_creat_time from sign_up as s left join `order` o on s.sign_order_id = o.order_autoid left join point as p on o.order_autoid = p.point_source_order COLLATE utf8_general_ci where sign_competition_id = {$data['aim_id']} and sign_type = '{$data['type']}'";
+        }
+        $sql_code = $sql_code." order by sign_created_time desc limit {$data['offset']},{$data['rows']}";
+        return $this->Sys_Model->execute_sql($sql_code);
+        //$where = array(
+        //    'sign_type'=>$data['type'],
+        //    'sign_competition_id'=>$data['aim_id']
+        //);
+        //return $this->Sys_Model->table_seleRow_limit("*","sign_up",$where,[],$data['rows'],$data['offset'],"sign_created_time,sign_id","DESC");
     }
     public function get_sign_data_num($data){
         $where = array(
