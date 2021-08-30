@@ -224,6 +224,7 @@ class Charge extends HTY_service
             'point_user_openid'=>$val['members_openid'],
             'point_num'=>'+'.$point,
             'point_source'=>$info[0]['activity_name'].'签到积分',
+            'point_source_order'=>$val['order_autoid'],
             'point_creat_time'=>date('Y-m-d H:i:s'),
         );
         $this->Sys_Model->table_addRow("point",$new_date);

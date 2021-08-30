@@ -217,8 +217,7 @@ class Enroll extends HTY_service{
         );
         return $this->Sys_Model->table_seleRow("*",'sign_up',$where);
     }
-    public function set_order_enroll_data($data): bool
-    {
+    public function set_order_enroll_data($data){
         $returnInfo = true;
         $this->db->trans_begin();
         $this->Sys_Model->table_addRow("order",$data['order_info']);
@@ -232,7 +231,11 @@ class Enroll extends HTY_service{
         }else{
             $this->db->trans_commit();
         }
-        return $returnInfo;
+        $res = $returnInfo;
+        if($returnInfo){
+            $res = $data['form']['sign_order_id'];
+        }
+        return $res;
     }
     public function get_user_info($data){
         $where = array('members_openid'=>$data['openid']);
@@ -250,6 +253,7 @@ class Enroll extends HTY_service{
             'point_user_openid'=>$data['openid'],
             'point_num'=>'-'.$data['num'],
             'point_source'=>$data['name'],
+            'point_source_order'=>$data['id'],
             'point_creat_time'=>date('Y-m-d H:i:s'),
         );
         $this->Sys_Model->table_addRow("point",$new_date_point);

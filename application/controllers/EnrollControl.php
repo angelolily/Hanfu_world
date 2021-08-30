@@ -304,7 +304,7 @@ class EnrollControl extends CI_Controller{
             $resultArr = build_resultArr('GCF002', FALSE, 0,'更新用户积分失败', [] );
             http_data(200, $resultArr, $this);
         }
-        $resultArr = build_resultArr('GCF000', TRUE, 0,'培训报名息成功', []);
+        $resultArr = build_resultArr('GCF000', TRUE, 0,'培训报名息成功', $res);
         http_data(200, $resultArr, $this);
     }
     public function get_aim_sign(){

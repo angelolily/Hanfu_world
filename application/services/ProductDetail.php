@@ -91,6 +91,7 @@ class ProductDetail extends HTY_service{
             'point_user_openid'=>$data['members_openid'],
             'point_num'=>'-'.$data['point'],
             'point_source'=>$data['name'].'抵扣积分',
+            'point_source_order'=>$data['id'],
             'point_creat_time'=>date('Y-m-d H:i:s'),
         );
         $this->Sys_Model->table_addRow("point",$new_date);
