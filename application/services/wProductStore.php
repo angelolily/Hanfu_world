@@ -263,24 +263,23 @@ class wProductStore extends HTY_service
 
         $oid=[];
         $like=[];
-        if($searchWhere['sign_competition_id']!="" && $searchWhere['DeptId']!="")
-        {
+        $sql_code = "select s.*,o.order_id from sign_up as s left join `order` as o on s.sign_order_id = o.order_autoid";
+        if($searchWhere['sign_competition_id']!="" && $searchWhere['DeptId']!=""){
+            $sql_code = $sql_code." where s.sign_competition_id = {$searchWhere['sign_competition_id']} and s.DeptId = '{$searchWhere['DeptId']}'";
             $where=['sign_competition_id'=>$searchWhere['sign_competition_id'],'DeptId'=>$searchWhere['DeptId']];
-            if($searchWhere['sign_name']!="" )
-            {
+            if($searchWhere['sign_name']!="" ){
                 $like=['sign_name'=>$searchWhere['sign_name']];
-
+                $sql_code = $sql_code." and s.sign_name like '%{$searchWhere['sign_name']}%'";
             }
-            if($searchWhere['sign_card_num']!="" )
-            {
+            if($searchWhere['sign_card_num']!="" ){
                 $like=['sign_card_num'=>$searchWhere['sign_card_num']];
+                $sql_code = $sql_code." and s.sign_card_num like '%{$searchWhere['sign_card_num']}%'";
             }
-
-            $allsign=$this->Custome_Model->table_seleRow("sign_id","sign_up",$where,$like);
-
-            $SignUp_list=$this->Custome_Model->table_seleRow_limit("*","sign_up",
-                $where,$like,$rows,$offset,"sign_created_time,sign_id","DESC");
-
+            //$allsign=$this->Custome_Model->table_seleRow("sign_id","sign_up",$where,$like);
+            //$SignUp_list=$this->Custome_Model->table_seleRow_limit("*","sign_up",$where,$like,$rows,$offset,"sign_created_time,sign_id","DESC");
+            $allsign = $this->Custome_Model->execute_sql($sql_code);
+            $sql_code = $sql_code." order by s.sign_created_time DESC limit {$offset},{$rows}";
+            $SignUp_list = $this->Custome_Model->execute_sql($sql_code);
 
             if(count($SignUp_list)>0)
             {
