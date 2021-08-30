@@ -111,4 +111,22 @@ class ProductDetail extends HTY_service{
         $where = array('commodity_id'=>$data['commodity_id']);
         return $this->Sys_Model->table_seleRow("*",'commodity',$where);
     }
+    public function gte_match_list_web($data){
+        $sql_code = "select competition_id,competition_name from competition where competition_status not in ('未发布')";
+        if(isset($data['DataScope'])){
+            if($data['DataScope'] == 3){
+                $sql_code = $sql_code." and competition_id in (select relevancy_id from specification where DeptId = '{$data['powerdept']}')";
+            }
+        }
+        return $this->Sys_Model->execute_sql($sql_code);
+    }
+    public function gte_specification_list_web($data){
+        $where = array('relevancy_id'=>$data['competition_id']);
+        if(isset($data['DataScope'])){
+            if($data['DataScope'] == 3){
+                $where['DeptId'] = $data['powerdept'];
+            }
+        }
+        return $this->Sys_Model->table_seleRow("*",'specification',$where);
+    }
 }

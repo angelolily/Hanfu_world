@@ -246,4 +246,50 @@ class ProductDetailControl extends CI_Controller{
         $resultArr = build_resultArr('GAI000', TRUE, 0,'获取目标活动信息成功', $res[0]);
         http_data(200, $resultArr, $this);
     }
+    public function update_share_user_point(){
+        $res_user = $this->productdetail->get_user_info($this->receive_data);
+        if(!$res_user){
+            $resultArr = build_resultArr('GAI001', FALSE, 0,'获取目标活动信息错误', null );
+            http_data(200, $resultArr, $this);
+        }
+        $user_info = $res_user[0];
+        $this->receive_data['referrer']['referrer_name'] = $user_info['members_name'];
+        $this->receive_data['referrer']['referrer_phone'] = $user_info['members_phone'];
+        $this->receive_data['referrer']['referrer_datetime'] = date('Y-m-d H:i:s');
+        $this->receive_data['referrer']['created_by'] = 'HFTX_Sys';
+        $this->receive_data['referrer']['referrer_datetime'] = date('Y-m-d H:i:s');
+        $res = $this->productdetail->update_share_user_point($this->receive_data);
+        $resultArr = build_resultArr('USP000', TRUE, 0,'目标用户奖励积分获取成功', null);
+        http_data(200, $resultArr, $this);
+    }
+    public function gte_match_list_web(){
+        $res = $this->productdetail->gte_match_list_web($this->receive_data);
+        if(isset($this->receive_data['DataScope'])){
+            if($this->receive_data['DataScope'] === ''){
+                $resultArr = build_resultArr('GML001', FALSE, 0,'参数错误——DataScope', null );
+                http_data(200, $resultArr, $this);
+            }
+        }
+        if(!$res){
+            $resultArr = build_resultArr('GML002', FALSE, 0,'获取赛事列表错误', null );
+            http_data(200, $resultArr, $this);
+        }
+        $resultArr = build_resultArr('GML000', TRUE, 0,'获取赛事列表成功', json_encode($res));
+        http_data(200, $resultArr, $this);
+    }
+    public function gte_specification_list_web(){
+        if(isset($this->receive_data['DataScope'])){
+            if($this->receive_data['DataScope'] === ''){
+                $resultArr = build_resultArr('GSL001', FALSE, 0,'参数错误——DataScope', null );
+                http_data(200, $resultArr, $this);
+            }
+        }
+        $res = $this->productdetail->gte_specification_list_web($this->receive_data);
+        if(!$res){
+            $resultArr = build_resultArr('GSL002', TRUE, 0,'获取赛区列表错误', null );
+            http_data(200, $resultArr, $this);
+        }
+        $resultArr = build_resultArr('GML000', TRUE, 0,'获取赛区列表成功', json_encode($res));
+        http_data(200, $resultArr, $this);
+    }
 }
