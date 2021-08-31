@@ -248,6 +248,212 @@ class CustomeInterface extends CI_Controller
 
     }
 
+    /**
+     * 8、上传图片
+     *
+     */
+    public function AdvertImageUpload()
+    {
+        $resultvalue = array();
+
+        $dir = './public/advert';
+        $pptfiles=[];
+        if (is_dir($dir) or mkdir($dir)) {
+
+
+            $files=$_FILES;
+
+            foreach ($files as $file)
+            {
+
+                $filename=time().rand(19,99). '.jpg';
+                $file_tmp = $file['tmp_name'];
+                $savePath=$dir."/".$filename;
+                $move_result = move_uploaded_file($file_tmp, $savePath);//上传文件
+                if ($move_result) {//上传成功
+                    array_push($pptfiles,$filename);
+                } else {
+                    //上传失败
+                    $resultvalue=[];
+                    return $resultvalue;
+                }
+
+            }
+            $pptfiles=join(',',$pptfiles);
+            $resultvalue['Advert_image']="https://hftx.fzz.cn/public/advert/".$pptfiles;
+            http_data(200, $resultvalue, $this);
+        }
+    }
+
+    /**
+     * 9、获取广告数据
+     *
+     */
+
+    public function getAdvertData()
+    {
+        $agentinfo = file_get_contents('php://input');
+        $info = json_decode($agentinfo, true);
+        if (array_key_exists("advertTitle", $info) && array_key_exists("pages", $info) && array_key_exists("rows", $info)) {
+
+
+
+            $requestData = $this->wproductstore->geAdvert($info);
+
+            http_data(200, $requestData, $this);
+
+
+        } else {
+            $requestData['Data'] = '';
+            $requestData["ErrorCode"] = "parameter-error";
+            $requestData["ErrorMessage"] = "参数接收错误";
+            $requestData["Success"] = false;
+            $requestData["Status_Code"] = "OSS203";
+
+        }
+
+
+    }
+
+
+    /**
+     * 10、新增广告
+     *
+     */
+    public function newAdvert()
+    {
+
+        $agentinfo = file_get_contents('php://input');
+        $info = json_decode($agentinfo,true);
+
+        if(count($info)>0)
+        {
+
+            $info['created_time']=date("Y-m-d H:i");
+            $resultNum = $this->wproductstore->addGeneral("advert", $info);
+            if (count($resultNum )> 0) {
+                $resulArr = build_resulArr('AD000', true, '插入成功', []);
+                http_data(200, $resulArr, $this);
+            } else {
+                $resulArr = build_resulArr('AD002', false, '插入失败', []);
+                http_data(200, $resulArr, $this);
+            }
+        }
+        else{
+            $resulArr = build_resulArr('AD001', false, '参数接收失败', []);
+            http_data(200, $resulArr, $this);
+        }
+
+
+
+
+    }
+
+
+    /**
+     * 11、修改广告
+     * User:
+     *
+     */
+
+    public function updateAdvert()
+    {
+
+        $agentinfo = file_get_contents('php://input');
+        $info = json_decode($agentinfo,true);
+
+        if(count($info)>0)
+        {
+            $info['updated_time']=date("Y-m-d H:i");
+            $where['advertId']=$info['advertId'];
+            $resultNum = $this->wproductstore->updateGeneral("advert",$info,$where);
+            if (count($resultNum )> 0) {
+                $resulArr = build_resulArr('ADU00', true, '修改成功', []);
+                http_data(200, $resulArr, $this);
+            } else {
+                $resulArr = build_resulArr('ADU02', false, '修改失败', []);
+                http_data(200, $resulArr, $this);
+            }
+        }
+        else{
+            $resulArr = build_resulArr('ADU01', false, '参数接收失败', []);
+            http_data(200, $resulArr, $this);
+        }
+
+    }
+
+
+    /**
+     * 12、删除广告
+     * User:
+     *
+     */
+
+    public function delAdvert()
+    {
+
+        $agentinfo = file_get_contents('php://input');
+        $info = json_decode($agentinfo,true);
+
+        if(count($info)>0)
+        {
+
+            $resultNum = $this->wproductstore->delGeneral("advert", $info);
+            if (count($resultNum )> 0) {
+                $resulArr = build_resulArr('ADU00', true, '删除成功', []);
+                http_data(200, $resulArr, $this);
+            } else {
+                $resulArr = build_resulArr('ADU02', false, '删除失败', []);
+                http_data(200, $resulArr, $this);
+            }
+        }
+        else{
+            $resulArr = build_resulArr('ADU01', false, '参数接收失败', []);
+            http_data(200, $resulArr, $this);
+        }
+
+    }
+
+    /**
+     * 13、获取跳转
+     * User:
+     *
+     */
+
+    public function getTypeInfo(){
+        $agentinfo = file_get_contents('php://input');
+        $info = json_decode($agentinfo,true);
+        $tableName="";
+        $fields="";
+        if(count($info)>0) {
+            switch ($info['type'])
+            {
+                case 1:$tableName="competition";$fields="competition_id,competition_name";break;
+                case 2:$tableName="activity";$fields="activity_id,activity_name";break;
+                case 3:$tableName="competition";$fields="competition_id,competition_name";break;
+                default:$tableName="commodity";$fields="commodity_id,commodity_name";break;
+            }
+
+
+            $requestData = $this->wproductstore->getAllGeneral($tableName,$fields);
+
+            http_data(200, $requestData, $this);
+
+
+
+        }
+        else{
+            $resulArr = build_resulArr('TYDU01', false, '参数接收失败', []);
+            http_data(200, $resulArr, $this);
+        }
+
+
+    }
+
+
+
+
+
     public function sendFinl()
     {
         $agentinfo = file_get_contents('php://input');
@@ -279,6 +485,7 @@ class CustomeInterface extends CI_Controller
     }
 
 
+    //导出Excel
     public function ControlExcel()
     {
         $agentinfo = file_get_contents('php://input');
@@ -296,6 +503,7 @@ class CustomeInterface extends CI_Controller
     }
 
 
+    //导出压缩包
     public function Controlzip()
     {
         $agentinfo = file_get_contents('php://input');
@@ -311,6 +519,126 @@ class CustomeInterface extends CI_Controller
         http_data(200, $requestData, $this);
 
     }
+
+
+
+    /**
+     * 获取物流信息
+     */
+    public function getExpress()
+    {
+        $agentinfo = file_get_contents('php://input');
+        $info = json_decode($agentinfo, true);
+        $requestData = array();
+        if ($agentinfo != "") {
+            $keys = "order_logistics";
+            $errorKey = existsArrayKey($keys, $info);
+            if ($errorKey == "") {
+
+
+                $requestData = $this->wproductstore->getExpressinfo($info['order_logistics']);
+
+
+            } else {
+                $requestData['Data'] = '';
+                $requestData["ErrorCode"] = "parameter-error";
+                $requestData["ErrorMessage"] = "参数接收错误";
+                $requestData["Success"] = false;
+                $requestData["Status_Code"] = "ACNT203";
+
+            }
+
+        } else {
+            $requestData['Data'] = '';
+            $requestData["ErrorCode"] = "parameter-error";
+            $requestData["ErrorMessage"] = "参数接收错误";
+            $requestData["Success"] = false;
+            $requestData["Status_Code"] = "ACNT203";
+
+        }
+
+        http_data("200", $requestData, $this);
+
+
+    }
+
+//    public function image3()
+//    {
+//
+//        $dir="./public/enroll";
+//
+//        $file_arr = scandir($dir);
+//
+//        $new_arr = [];
+//
+//        foreach ( $file_arr as $item)
+//        {
+//            if($item!="." && $item!="..")
+//            {
+//                $dirs="./public/enroll/".$item;
+//                $files_arrs = scandir($dirs);
+//                foreach ($files_arrs as $items )
+//                {
+//                    if($items!="." && $items!="..")
+//                    {
+//                        $ord=$dirs."/".$items;
+//                        $des="./public/enroll2/".$item;
+//                        if(is_dir($des) or mkdir($des))
+//                        {
+//
+//                        }
+//                        $content = file_get_contents($ord);
+//                        $size = strlen($content);
+//                        $size=$size/1024;
+//                        $des="./public/enroll2/".$item."/".$items;
+//                        if($size>900)
+//                        {
+//                            imageSize($ord,$des);
+//                        }
+//                        else
+//                        {
+//
+//                            if(copy($ord,$des))
+//
+//                            {
+//
+//                                array_push($new_arr,$ord.'-ok');
+//
+//                            }
+//
+//                            else
+//                            {
+//                                array_push($new_arr,$ord.'-fail');
+//                            }
+//
+//                        }
+//
+//                    }
+//
+//                }
+//
+//
+//            }
+//
+//        }
+//
+//
+//
+//
+//        http_data(200, $new_arr, $this);
+//
+//
+//
+//    }
+//
+//
+//    public function testSend(){
+//
+//
+//
+//        $requestData=$this->wechatloginregister->sendMSG();
+//
+//    }
 
 
 
