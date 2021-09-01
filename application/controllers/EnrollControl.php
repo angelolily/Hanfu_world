@@ -370,7 +370,7 @@ class EnrollControl extends CI_Controller{
         $data['form']['sign_created_time'] = date('Y-m-d H:i:s');
         $data['form']['sign_statue'] = '未付款';
         if($data['order_info']['order_statue'] === '进行中'){
-            $data['form']['sign_statue'] = '已付款';
+            $data['form']['sign_statue'] = '成功报名';
         }
         if(isset($data['form']['sign_name']) && isset($data['form']['sign_phone'])){
             $data['order_info']['order_customer_name'] = $data['form']['sign_name'];
