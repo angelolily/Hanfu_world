@@ -359,6 +359,15 @@ class EnrollControl extends CI_Controller{
         $resultArr = build_resultArr('GCF000', TRUE, 0,'更新用户信息成功', []);
         http_data(200, $resultArr, $this);
     }
+    public function check_is_exist_enroll(){
+        $res = $this->enroll->check_exits_state($this->receive_data);
+        if(!$res){
+            $resultArr = build_resultArr('CES000', TRUE, 0,'未重复报名', $this->db->last_query() );
+            http_data(200, $resultArr, $this);
+        }
+        $resultArr = build_resultArr('CES001', FALSE, 0,'重复报名', $this->db->last_query());
+        http_data(200, $resultArr, $this);
+    }
     public function set_receive_data($data): array
     {
         $data['order_info']['order_id'] = get_random_tool(4).time();

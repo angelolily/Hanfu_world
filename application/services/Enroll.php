@@ -210,12 +210,13 @@ class Enroll extends HTY_service{
     }
     public function check_exits_state($data){
         $where = array(
-            'sign_name'=>$data['order_info']['order_customer_name'],
-            'sign_phone'=>$data['order_info']['order_customer_phone'],
-            'sign_competition_id'=>$data['order_info']['order_capid'],
-            'sign_statue'=>'已付款'
+            'sign_name'=>$data['name'],
+            'sign_phone'=>$data['phone'],
+            'sign_competition_id'=>$data['id'],
+            'sign_type'=>$data['type'],
+            'sign_statue'=>'成功报名'
         );
-        return $this->Sys_Model->table_seleRow("*",'sign_up',$where);
+        return $this->Sys_Model->table_seleRow("sign_id",'sign_up',$where);
     }
     public function set_order_enroll_data($data){
         $returnInfo = true;
