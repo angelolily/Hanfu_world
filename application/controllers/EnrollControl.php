@@ -232,6 +232,49 @@ class EnrollControl extends CI_Controller{
         $resultArr = build_resultArr('DIO000', TRUE, 0,'删除索引信息成功', []);
         http_data(200, $resultArr, $this);
     }
+    public function get_enroll_info(){
+        $res = $this->enroll->get_enroll_info($this->receive_data);
+        if(!$res){
+            $resultArr = build_resultArr('GEI001', FALSE, 0,'获取报名信息错误', [] );
+            http_data(200, $resultArr, $this);
+        }
+        // 获取证件照
+        $res_picture = array();
+        if($res[0]['sign_picture'] !== ''){
+            $dir_name_picture = './public/enroll/'.$res[0]['sign_picture'];
+            if(file_exists($dir_name_picture)){
+                $handler = opendir($dir_name_picture);
+                if ($handler) {
+                    while (($filename = readdir($handler)) !== false) {
+                        if ($filename != "." && $filename != "..") {
+                            $res_url = "https://hftx.fzz.cn/public/enroll/" . $res[0]['sign_picture'] . '/' . $filename;
+                            array_push($res_picture,$res_url);
+                        }
+                    }
+                }
+                closedir($handler);
+            }
+        }
+        // 获取宣传照
+        $res_image = array();
+        if($res[0]['sign_image'] !== ''){
+            $dir_name_image = './public/enroll/'.$res[0]['sign_image'];
+            if(file_exists($dir_name_image)){
+                $handler = opendir($dir_name_image);
+                if ($handler) {
+                    while (($filename = readdir($handler)) !== false) {
+                        if ($filename != "." && $filename != "..") {
+                            $res_url = "https://hftx.fzz.cn/public/enroll/" . $res[0]['sign_image'] . '/' . $filename;
+                            array_push($res_image,$res_url);
+                        }
+                    }
+                }
+                closedir($handler);
+            }
+        }
+        $resultArr = build_resultArr('GEI000', TRUE, 0,'获取报名信息成功', [$res[0],$res_picture,$res_image]);
+        http_data(200, $resultArr, $this);
+    }
     public function get_activity_info(){
         $res = $this->enroll->get_activity_info($this->receive_data);
         if(!$res){

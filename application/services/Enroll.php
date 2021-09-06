@@ -184,6 +184,10 @@ class Enroll extends HTY_service{
         $where = array('sign_index_id'=>$data['sign_index_id']);
         return $this->Sys_Model->table_del("sign_index",$where);
     }
+    public function get_enroll_info($data){
+        $where = array('sign_order_id'=>$data['order_id']);
+        return $this->Sys_Model->table_seleRow("*",'sign_up',$where);
+    }
     public function get_activity_info($data){
         $where = array('activity_id'=>$data['activity_id']);
         return $this->Sys_Model->table_seleRow("*",'activity',$where);
