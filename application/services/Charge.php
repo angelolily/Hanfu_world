@@ -608,8 +608,10 @@ class Charge extends HTY_service
         $TmpArr = $this->Sys_Model->execute_sql($sql_limit);
         //搜索订单明细表，并插入到TempArr
         foreach($TmpArr as $key=>$value){
-            $where_item['order_id']=$value['order_id'];
-            $item= $this->Sys_Model->table_seleRow("*","orderitem",$where_item);
+            $sql_code = "select oi.*,c.commodity_is_refund as c_is_refund from orderitem as oi left join commodity as c on oi.commodity_id = c.commodity_id where oi.order_id = {$value['order_id']}";
+            $item = $this->Sys_Model->execute_sql($sql_code);
+//            $where_item['order_id']=$value['order_id'];
+//            $item= $this->Sys_Model->table_seleRow("*","orderitem",$where_item);
             $TmpArr[$key]['order_item']=$item;
         }
         $result['total']=count($totalArr);
