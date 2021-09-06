@@ -429,7 +429,8 @@ class Charge extends HTY_service
      */
     public function getPoint($val)
     {
-        $result=$this->Sys_Model->table_seleRow('*',"members", $val);
+        $result['person']=$this->Sys_Model->table_seleRow('*',"members", $val);
+        $result['para']=$this->Sys_Model->table_seleRow('*',"base_parameter");
         return $result;
     }
     /**
