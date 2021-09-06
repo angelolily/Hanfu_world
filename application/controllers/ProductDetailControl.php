@@ -15,6 +15,27 @@ class ProductDetailControl extends CI_Controller{
         $this->receive_data = json_decode($receive, TRUE);
         $this->base_url='https://'.$_SERVER['HTTP_HOST'].substr($_SERVER['PHP_SELF'],0,strrpos($_SERVER['PHP_SELF'],'/index.php')+1);
     }
+    public function get_match_spec_info(){
+        $res_spec = $this->productdetail->get_spec_info_cs($this->receive_data);
+        if(!$res_spec){
+            $resultArr = build_resultArr('GSI001', FALSE, 0,'获取赛区信息错误', null );
+            http_data(200, $resultArr, $this);
+        }
+        $res_match = $this->productdetail->get_match_info($this->receive_data);
+        if(!$res_match){
+            $resultArr = build_resultArr('GSI002', FALSE, 0,'获取赛区信息错误', null );
+            http_data(200, $resultArr, $this);
+        }
+        $res_match[0]['competition_cover'] = $this->base_url.'public/comcover/'.$res_match[0]['competition_cover'];
+        $res_match[0]['competition_graphic'] = $this->base_url.'public/comgraphic/'.$res_match[0]['competition_graphic'];
+        $res_sign_info = $this->productdetail->get_sign_info($res_match[0]['competition_sign_model']);
+        if(!$res_sign_info){
+            $resultArr = build_resultArr('GSI003', FALSE, 0,'获取报名表信息错误', null );
+            http_data(200, $resultArr, $this);
+        }
+        $resultArr = build_resultArr('GPI000', TRUE, 0,'获取赛事信息成功', [$res_spec[0],$res_match[0],[],$res_sign_info]);
+        http_data(200, $resultArr, $this);
+    }
     public function get_match_info(){
         $res = $this->productdetail->get_match_info($this->receive_data);
         if(!$res){

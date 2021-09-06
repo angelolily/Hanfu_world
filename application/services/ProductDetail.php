@@ -130,4 +130,11 @@ class ProductDetail extends HTY_service{
         }
         return $this->Sys_Model->table_seleRow("*",'specification',$where);
     }
+    public function get_spec_info_cs($data){
+        $where = array(
+            'relevancy_id'=>$data['competition_id'],
+            'DeptId'=>$data['spec_id']
+        );
+        return $this->Sys_Model->table_seleRow("*",'specification',$where);
+    }
 }

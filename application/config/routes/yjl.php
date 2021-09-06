@@ -18,6 +18,7 @@ $route['p/commodity'] = 'ProductDetailControl/gte_commodity_info';// 获取商�
 $route['p/activity'] = 'ProductDetailControl/gte_activity_info';// 获取活动信息
 $route['p/get_m_list_w'] = 'ProductDetailControl/gte_match_list_web';// 获取赛事列表_web
 $route['p/get_s_list_w'] = 'ProductDetailControl/gte_specification_list_web';// 获取赛区列表_web
+$route['p/cs_info'] = 'ProductDetailControl/get_match_spec_info';// 获取赛区列表_web
 
 $route['my/point_s'] = 'ProductDetailControl/update_user_point';// 更新用户积分
 $route['my/point_g'] = 'ProductDetailControl/gte_user_point';// 获取用户积分
