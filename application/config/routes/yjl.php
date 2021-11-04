@@ -2,6 +2,8 @@
 $route['pay/login'] = 'WxPayControl/login';// 测试登陆
 $route['pay/prepay'] = 'WxPayControl/get_prepay_id';// 获取prepay_id数据
 $route['pay/update'] = 'WxPayControl/update_order_info';// 未付款订单付款后更新订单
+$route['pay/refund'] = 'WxPayControl/refund_order';// 订单退款
+$route['pay/refund_check'] = 'WxPayControl/refund_order_check';// 订单退款
 
 $route['p/info_s'] = 'ProductDetailControl/get_spec_info';// 获取赛区信息
 $route['p/info_m'] = 'ProductDetailControl/get_match_info';// 获取赛事信息
@@ -22,6 +24,7 @@ $route['p/cs_info'] = 'ProductDetailControl/get_match_spec_info';// 获取赛区
 
 $route['my/point_s'] = 'ProductDetailControl/update_user_point';// 更新用户积分
 $route['my/point_g'] = 'ProductDetailControl/gte_user_point';// 获取用户积分
+$route['my/info_update'] = 'ProductDetailControl/update_user_info';// 更新用户信息
 
 $route['e/upload_i'] = 'EnrollControl/upload_img';// 上传照片
 $route['e/update_d'] = 'EnrollControl/update_img_dir';// 修改选手照片文件夹

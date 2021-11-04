@@ -137,4 +137,7 @@ class ProductDetail extends HTY_service{
         );
         return $this->Sys_Model->table_seleRow("*",'specification',$where);
     }
+    public function update_user_info($where,$update){
+        return $this->Sys_Model->table_updateRow("members",$update,$where);
+    }
 }

@@ -313,4 +313,60 @@ class ProductDetailControl extends CI_Controller{
         $resultArr = build_resultArr('GML000', TRUE, 0,'获取赛区列表成功', json_encode($res));
         http_data(200, $resultArr, $this);
     }
+    public function update_user_info() {
+        $education = $this->receive_data['education'];
+        $address = $this->receive_data['address'];
+        $unit = $this->receive_data['unit'];
+        $members_openid = $this->receive_data['members_openid'];
+        $where = array('members_openid'=>$members_openid);
+        $update = array(
+            'members_education'=>$education,
+            'members_address'=>$address,
+            'members_WorkUnit'=>$unit
+        );
+        $res = $this->productdetail->update_user_info($where,$update);
+        $resultArr = build_resultArr('USI000', TRUE, 0,'更新用户信息成功', null);
+        http_data(200, $resultArr, $this);
+    }
+    public function test(){
+        $file = $_FILES['file_1'];
+        $file_name = time().rand(100,999).$this->input->post('name');
+        $path = './uploads/img';
+        $tamp_arr = explode('.', $file['name']);
+        $ex_name = '.' . $tamp_arr[count($tamp_arr)-1];
+        if(is_dir($path) or mkdir($path)){
+            $file_tmp = $file['tmp_name'];
+            $save_path = $path . "/" . $file_name . $ex_name;
+            if(file_exists($save_path)){
+                $file_name = time().rand(100,999).$this->input->post('name');
+                $save_path = $path . "/" . $file_name . $ex_name;
+            }
+            $ab_url = 'D:\\phpstudy_pro\\WWW\\Hanfu-World\\uploads\\img\\'.$file_name.$ex_name;
+            $size = $file['size']/10240;
+            if($size>900){
+                imageSize($file_tmp,$ab_url);
+                $move_result = TRUE;
+            }else{
+                $move_result = move_uploaded_file($file_tmp, $save_path);
+            }
+            if(!$move_result){
+                $resultArr = build_resultArr('UI002', FALSE, 0,'存储照片失败', null );
+                http_data(200, $resultArr, $this);
+            }
+            $base_url='http://'.$_SERVER['HTTP_HOST'].substr($_SERVER['PHP_SELF'],0,strrpos($_SERVER['PHP_SELF'],'/index.php')+1);
+            $res_arr = [];
+            $res_url = $base_url.'uploads/img/'.$file_name.$ex_name;
+            $res_obj = [
+                'url'=> $res_url,
+                'alt'=> "图片1",
+                'href'=> $res_url
+            ];
+            array_push($res_arr,$res_obj);
+            $resultArr = build_resultArr('UI000', TRUE, 0,'存储照片成功', $res_url );
+            http_data(200, $resultArr, $this);
+        }else{
+            $resultArr = build_resultArr('UI001', FALSE, 0,'打开目录失败', null );
+            http_data(200, $resultArr, $this);
+        }
+    }
 }

@@ -64,9 +64,48 @@ class WxPayControl extends CI_Controller{
         $resultArr = build_resultArr('UOI000', TRUE, 0, '更新订单信息成功', null);
         http_data(200, $resultArr, $this);
     }
-    public function notify(){
-
+    // 订单退款
+    public function refund_order(){
+        $order_id = $this->receive_data['order_mic_id'];
+        $order_refund_id = get_random(32,'HFTX');
+        $order_price = (int)$this->receive_data['order_price'];
+        $refund_price = (int)$this->receive_data['order_price_refund'];
+        $other = [];
+        $res = refund_order($order_id, $order_refund_id, $order_price, $refund_price, $other);
+        $resultArr = build_resultArr('ROW000', TRUE, 0, '更新订单信息成功', $res);
+        http_data(200, $resultArr, $this);
     }
+    // 订单退款状态查询
+    public function refund_order_check(){
+        $order_id = $this->receive_data['order_mic_id'];
+        $res = refund_order_check($order_id);
+        $resultArr = build_resultArr('ROW000', TRUE, 0, '更新订单信息成功', $res);
+        http_data(200, $resultArr, $this);
+    }
+    //处理微信支付回调
+    public function notify(){
+        respond_notify();
+        $test_xml  = file_get_contents("php://input");
+        $json_xml = json_encode(simplexml_load_string($test_xml, 'SimpleXMLElement', LIBXML_NOCDATA));
+        $result = json_decode($json_xml, true);
+        if($result){
+            if($result['return_code'] == 'SUCCESS' && $result['result_code'] == 'SUCCESS'){
+                
+            }
+        }
+    }//处理微信退款回调
+    public function notify_refund(){
+        respond_notify_refund();
+//        $test_xml  = file_get_contents("php://input");
+//        $json_xml = json_encode(simplexml_load_string($test_xml, 'SimpleXMLElement', LIBXML_NOCDATA));
+//        $result = json_decode($json_xml, true);
+//        if($result){
+//            if($result['return_code'] == 'SUCCESS' && $result['result_code'] == 'SUCCESS'){
+//
+//            }
+//        }
+    }
+
     public function login(){
         $appid = 'wx61088edf470bc1f4';
         $secret = '542a4b5583a35cce1361e60751d22e67';

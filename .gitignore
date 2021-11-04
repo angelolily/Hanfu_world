@@ -17,6 +17,7 @@ application/logs/*
 
 .idea/
 /vendor/
+/uploads/
 /composer.lock
 
 /public/enroll/*
