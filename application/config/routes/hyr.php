@@ -19,5 +19,6 @@ $route['ch/getOrder'] = 'ChargeControl/getOrder';//获取我的商品订单
 $route['ch/confirm'] = 'ChargeControl/confirm';//确认收货
 $route['ch/refund'] = 'ChargeControl/refund';//申请退款
 $route['ch/logistics'] = 'ChargeControl/logistics';//买家填写物流单号
+$route['ch/getMP'] = 'ChargeControl/getMemberPrice';//获取会员折扣
 
 

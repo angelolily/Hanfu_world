@@ -16,11 +16,14 @@ $route['ctt/show'] = 'CompetitionControl/showRow';//赛区下拉
 $route['ctt/modify'] = 'CompetitionControl/modifyRow';//修改预赛 总决赛 传两个数组 同时删除 再保存新的
 $route['ctt/del'] = 'CompetitionControl/delRow';//删除预赛，总决赛
 $route['ctt/get'] = 'CompetitionControl/getRow';//获取赛事
+$route['ctt/getonly'] = 'CompetitionControl/getonlyRow';//单单获取赛事
 $route['ctt/publish'] = 'CompetitionControl/publishRow';//发布
 $route['ctt/finally'] = 'CompetitionControl/finallycompetitionRow';//结束
 $route['ctt/getspec'] = 'CompetitionControl/getspecificationRow';//获取赛区
 $route['ord/get'] = 'OrderControl/getRow';//获取赛事赛区报名订单
 $route['ord/getall'] = 'OrderControl/getallRow';//获取商品订单
+$route['ord/getac'] = 'OrderControl/getactivityRow';//获取活动订单
+$route['ord/getcou'] = 'OrderControl/getcourseRow';//获取课程订单
 $route['ord/getdet'] = 'OrderControl/getdetialOrder';//获取商品订单详情
 $route['ord/yesno'] = 'OrderControl/yesornoRow';//同意或拒绝退款
 $route['ord/modifyprice'] = 'OrderControl/modifypriceRow';//修改订单价格
@@ -43,6 +46,7 @@ $route['att/del'] = 'ActivityControl/delRow';//删除活动
 $route['att/get'] = 'ActivityControl/getRow';//获取活动
 $route['att/publish'] = 'ActivityControl/publishRow';//发布活动
 $route['att/finally'] = 'ActivityControl/finallyRow';//结束活动
+$route['att/lowactivity'] = 'ActivityControl/lowactivity';//下架活动
 $route['csc/new'] = 'CourseControl/newRow';//新增课程
 $route['csc/upd'] = 'CourseControl/Uploaddetail';//存入课程图文
 $route['csc/fdd'] = 'CourseControl/finddetail';//获取课程图文
@@ -54,6 +58,7 @@ $route['csc/del'] = 'CourseControl/delRow';//删除课程
 $route['csc/get'] = 'CourseControl/getRow';//获取课程
 $route['csc/publish'] = 'CourseControl/publishRow';//发布课程
 $route['csc/finally'] = 'CourseControl/finallyRow';//结束课程
+$route['csc/lowactivity'] = 'CourseControl/lowactivity';//下架课程
 $route['cmm/new'] = 'CommodityControl/newRow';//新增商品
 $route['cmm/upd'] = 'CommodityControl/Uploaddetail';//存入商品图文
 $route['cmm/fdd'] = 'CommodityControl/finddetail';//获取商品图文
@@ -71,6 +76,13 @@ $route['cmm/finally'] = 'CommodityControl/finallycommodityRow';//下架商品
 $route['cmm/getspec'] = 'CommodityControl/getspecificationRow';//获取商品规格
 $route['cmm/getspectwo'] = 'CommodityControl/getspecificationtwoRow';//获取商品规格
 $route['rrr/get'] = 'ReferrerControl/getRow';//获取推荐人表
+$route['rep/get'] = 'ReportControl/getcomReport';//获取赛事报表
+$route['rep/getcou'] = 'ReportControl/getcouseReport';//获取课程报表
+$route['rep/getac'] = 'ReportControl/getacReport';//获取活动报表
+$route['rep/getdity'] = 'ReportControl/getdityReport';//获取商品报表
+$route['rep/getrefer'] = 'ReportControl/getreferrerReport';//获取代理商报表
+$route['mem/get'] = 'MemberControl/getRow';//获取会员报表分页
+
 
 
 

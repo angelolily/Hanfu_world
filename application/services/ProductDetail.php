@@ -112,6 +112,10 @@ class ProductDetail extends HTY_service{
         $where = array('commodity_id'=>$data['commodity_id']);
         return $this->Sys_Model->table_seleRow("*",'commodity',$where);
     }
+    public function get_commodity_editor($data){
+        $where = array('commodity_id'=>$data['commodity_id']);
+        return $this->Sys_Model->table_seleRow("commodity_graphic_tag",'commodity',$where);
+    }
     public function gte_match_list_web($data){
         $sql_code = "select competition_id,competition_name from competition where competition_status not in ('未发布')";
         if(isset($data['DataScope'])){

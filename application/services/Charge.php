@@ -12,6 +12,7 @@ class Charge extends HTY_service
         $this->load->model('Sys_Model');
         $this->load->helper('tool');
         $this->load->library('encryption');
+        $this->load->helper('qrcode');
     }
     /**
      * Notes:获取投票表
@@ -251,7 +252,7 @@ class Charge extends HTY_service
      */
     public function getCommodity($val)
     {
-        $field="*";
+        $field="commodity_id,commodity_name,commodity_describe,commodity_status,commodity_type,commodity_graphic,commodity_cover,commodity_ishome,commodity_integral,commodity_deduction,competition_isSeven,commodity_price,commodity_carriage,commodity_is_refund,commodity_is_integral";
         $begin=$val['rows'];
         $offset=($val['pages']-1)*$val['rows'];
         $like=[];
@@ -265,7 +266,9 @@ class Charge extends HTY_service
             $TmpArr = $this->Sys_Model->table_seleRow_limit($field, "commodity", $where, $like,$begin,$offset,$order="commodity_id","desc");
             foreach($TmpArr as $i => $value){
                 $TmpArr[$i]['commodity_cover']=$this->config->item('localpath') . '/public/commoditycover/' . $TmpArr[$i]['commodity_cover'];
-                $TmpArr[$i]['commodity_graphic']=$this->config->item('localpath') . '/public/commoditygraphic/' . $TmpArr[$i]['commodity_graphic'];
+                if(!strstr($TmpArr[$i]['commodity_graphic'],"https://")){
+                    $TmpArr[$i]['commodity_graphic']=$this->config->item('localpath') . '/public/commoditygraphic/' . $TmpArr[$i]['commodity_graphic'];
+                }
             }
             $result['total']=count($totalArr);
             $result['data']=$TmpArr;
@@ -362,7 +365,7 @@ class Charge extends HTY_service
         $by=$val['members_id'];
         $where['members_id']=$by;
         $totalArr=$this->Sys_Model->table_seleRow('carid',"shop_cart", $where);
-        $sql="select $field from shop_cart a left join commodity_spec b on a.commodity_spec_id=b.commodity_spec_id where a.members_id=$by order by a.carid_created_time desc LIMIT $offset,$begin";
+        $sql="select $field from shop_cart a left join commodity_spec b on a.commodity_spec_id=b.commodity_spec_id left join commodity c on b.commodity_id=c.commodity_id where a.members_id=$by and c.commodity_status='已发布' order by a.carid_created_time desc LIMIT $offset,$begin";
         $TmpArr = $this->Sys_Model->execute_sql($sql);
         $result['total']=count($totalArr);
         $result['data']=$TmpArr;
@@ -687,6 +690,30 @@ class Charge extends HTY_service
         $update['orderitem_return_logistics']=$val['orderitem_return_logistics'];
         $where['orderitem_id']=$val['orderitem_id'];
         $result=$this->Sys_Model->table_updateRow('orderitem',$update,$where);
+        return $result;
+    }
+    /**
+     * Notes:获取会员折扣
+     * User: hyr
+     * DateTime: 2021/7/26 10:19
+     * @param array $val  随便
+     * @return array $result
+     */
+    public function getMemberPrice($val)
+    {
+        $result['para']=$this->Sys_Model->table_seleRow('*',"base_parameter");
+        return $result;
+    }
+    /**
+     * Notes:获取会员折扣
+     * User: hyr
+     * DateTime: 2021/11/04 10:19
+     * @param array $val  随便
+     * @return array $result
+     */
+    public function addCode($val)
+    {
+        $result['path']=getNormalCode("store?".$val['commodity_id']);
         return $result;
     }
 }

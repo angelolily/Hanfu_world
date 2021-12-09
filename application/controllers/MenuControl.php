@@ -62,7 +62,7 @@ class MenuControl extends CI_Controller
 		if($errorKey=="")
 		{
 			$result = $this->menu->delMenu($DataArr['menuid']);
-			if (count($result) > 0) {
+			if ($result) {
 				$resulArr = build_resulArr('M000', true, '删除成功',[] );
 				http_data(200, $resulArr, $this);
 			} else {

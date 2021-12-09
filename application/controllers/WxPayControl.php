@@ -72,7 +72,12 @@ class WxPayControl extends CI_Controller{
         $refund_price = (int)$this->receive_data['order_price_refund'];
         $other = [];
         $res = refund_order($order_id, $order_refund_id, $order_price, $refund_price, $other);
-        $resultArr = build_resultArr('ROW000', TRUE, 0, '更新订单信息成功', $res);
+        $res_update = $this->wxpay->update_refund_order($order_id,$refund_price);
+        if(!$res_update){
+            $resultArr = build_resultArr('ROW000', FALSE, 0, '更新订单信息失败', null);
+            http_data(200, $resultArr, $this);
+        }
+        $resultArr = build_resultArr('ROW000', TRUE, 0, '更新订单信息成功', null);
         http_data(200, $resultArr, $this);
     }
     // 订单退款状态查询
@@ -96,12 +101,16 @@ class WxPayControl extends CI_Controller{
     }//处理微信退款回调
     public function notify_refund(){
         respond_notify_refund();
-//        $test_xml  = file_get_contents("php://input");
-//        $json_xml = json_encode(simplexml_load_string($test_xml, 'SimpleXMLElement', LIBXML_NOCDATA));
-//        $result = json_decode($json_xml, true);
-//        if($result){
-//            if($result['return_code'] == 'SUCCESS' && $result['result_code'] == 'SUCCESS'){
+//        $xml_origin = json_encode(simplexml_load_string(file_get_contents("php://input"), 'SimpleXMLElement', LIBXML_NOCDATA));
+//        $result_origin = json_decode($xml_origin, true);
+//        if($result_origin){
+//            $key="Hftx780125780125780125780125Hftx";
+//            $xml= openssl_decrypt(base64_decode($result_origin['req_info']), 'AES-256-ECB', MD5($key), OPENSSL_RAW_DATA, '');
+//            $result = json_decode(json_encode(simplexml_load_string($xml, 'SimpleXMLElement', LIBXML_NOCDATA)), true);
+//            if($result){
+//                if($result['return_code'] == 'SUCCESS' && $result['result_code'] == 'SUCCESS'){
 //
+//                }
 //            }
 //        }
     }

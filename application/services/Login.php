@@ -66,8 +66,9 @@ class Login extends HTY_service
 	{
 
 			$resulArr=[];
-			$userDataArr = $this->Sys_Model->table_seleRow('UserStatus,UserName,Mobile,UserPassword,UserRole,Sex,IsAdmin,UserDept,UserPost,Avatar',
-				'base_user', array('Mobile' => $indData['Mobile']));
+            $mobile = $indData['Mobile'];
+            $sql_code = "SELECT u.UserStatus,u.UserName,u.Mobile,u.UserPassword,u.UserRole,u.Sex,u.IsAdmin,u.UserDept,u.UserPost,u.Avatar,d.DeptName FROM base_user AS u INNER JOIN base_dept AS d ON u.UserDept = d.DeptId WHERE u.Mobile = $mobile";
+            $userDataArr = $this->Sys_Model->execute_sql($sql_code);
 			if (count($userDataArr) > 0) {
 				if ($userDataArr[0]['UserStatus'] == '1') {
 					$pwd = $this->encryption->decrypt($userDataArr[0]['UserPassword']);
@@ -81,7 +82,7 @@ class Login extends HTY_service
 						}
 						if($userDataArr[0]['UserRole']!=""){
 							$deptall=[];
-							$deptArr = $this->Sys_Model->table_seleRow('DeptId,ParentId', "base_dept", array('DelFlag'=>'1'), $like=array());
+							$deptArr = $this->Sys_Model->table_seleRow('DeptId,DeptName,ParentId', "base_dept", array('DelFlag'=>'1'), $like=array());
 							$owndept[0]=$userDataArr[0]['UserDept'];//自身部门ID
 							$deptall=$this->getDeptTree($owndept[0], $deptArr);
 							if($deptall){//有儿子外加自己存进去

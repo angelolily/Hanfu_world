@@ -17,6 +17,7 @@ $route['p/my_c'] = 'ProductDetailControl/get_user_course';// 获取用户参加�
 $route['p/list_ac'] = 'ProductDetailControl/get_ac_list';// 获取目标信息列表
 $route['p/state'] = 'ProductDetailControl/update_aim_p_state';// 更新目标数据的状态
 $route['p/commodity'] = 'ProductDetailControl/gte_commodity_info';// 获取商品信息
+$route['p/editor'] = 'ProductDetailControl/get_commodity_editor';// 获取商品信息
 $route['p/activity'] = 'ProductDetailControl/gte_activity_info';// 获取活动信息
 $route['p/get_m_list_w'] = 'ProductDetailControl/gte_match_list_web';// 获取赛事列表_web
 $route['p/get_s_list_w'] = 'ProductDetailControl/gte_specification_list_web';// 获取赛区列表_web
@@ -54,3 +55,6 @@ $route['yac/list'] = 'UserAddressControl/getUserAddress'; //获取用户地址�
 $route['yac/aim'] = 'UserAddressControl/getAimAddress'; //获取目标收货地址
 $route['yac/save'] = 'UserAddressControl/saveAddress'; //保存用户收获地址
 $route['yac/de'] = 'UserAddressControl/getDefaultAddress'; //获取用户默认收获地址
+
+$route['m/get_integral'] = 'MembersManageControl/get_members_integral'; //获取用户积分
+$route['m/update_integral'] = 'MembersManageControl/update_members_integral'; //获取用户积分

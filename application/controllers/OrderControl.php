@@ -61,7 +61,7 @@ class OrderControl extends CI_Controller
 
 	public function getRow()
 	{
-		$keys="pages,rows,order_customer_name,order_capid,DataScope,order_deptid,powerdept";
+		$keys="pages,rows,order_customer_name,order_capid,DataScope,order_deptid,powerdept,order_statue";
 		$this->hedVerify($keys);
 		$result = $this->order->getOrder($this->dataArr);
 		if (count($result) >= 0) {
@@ -72,172 +72,213 @@ class OrderControl extends CI_Controller
 			http_data(200, $resulArr, $this);
 		}
 	}
-//	public function modifypriceRow()//修改价格
-//	{
-//		$keys="order_id,order_price";
-//		$this->hedVerify($keys);
-////		$this->hedVerify();
-//		$result = $this->order->modifyMoney($this->dataArr, $this->userArr['Mobile']);
-//		if (count($result) > 0) {
-//			$resulArr = build_resulArr('D000', true, '修改成功', []);
-//			http_data(200, $resulArr, $this);
-//		} else {
-//			$resulArr = build_resulArr('D003', false, '修改失败', []);
-//			http_data(200, $resulArr, $this);
-//		}
-//
-//	}
-//	public function modifyaddressRow() //修改地址
-//	{
-//		$keys="order_id,order_lg_consignee,order_lg_address,order_lg_phone";
-//		$this->hedVerify($keys);
-////		$this->hedVerify();
-//		$result = $this->order->modifyAddress($this->dataArr, $this->userArr['Mobile']);
-//		if (count($result) > 0) {
-//			$resulArr = build_resulArr('D000', true, '修改成功', []);
-//			http_data(200, $resulArr, $this);
-//		} else {
-//			$resulArr = build_resulArr('D003', false, '修改失败', []);
-//			http_data(200, $resulArr, $this);
-//		}
-//
-//	}
-//	public function modifylogisticsRow() //修改物流
-//	{
-//		$keys="order_id,order_logistics,order_lg_name";
-//		$this->hedVerify($keys);
-////		$this->hedVerify();
-//		$result = $this->order->modifyLogistics($this->dataArr, $this->userArr['Mobile']);
-//		if (count($result) > 0) {
-//			$resulArr = build_resulArr('D000', true, '修改成功', []);
-//			http_data(200, $resulArr, $this);
-//		} else {
-//			$resulArr = build_resulArr('D003', false, '修改失败', []);
-//			http_data(200, $resulArr, $this);
-//		}
-//
-//	}
-//    public function modifystatueRow() //修改状态
-//    {
+    public function getallRow()
+    {
+        $keys="pages,rows,order_customer_phone,order_id,DataScope,order_product,powerdept,order_refund_flag";
+        $this->hedVerify($keys);
+        $result = $this->order->getallOrder($this->dataArr);
+        if (count($result) >= 0) {
+            $resulArr = build_resulArr('D000', true, '获取成功', json_encode($result));
+            http_data(200, $resulArr, $this);
+        } else {
+            $resulArr = build_resulArr('D003', false, '获取失败', []);
+            http_data(200, $resulArr, $this);
+        }
+    }
+    public function getactivityRow()
+    {
+        $keys="pages,rows,order_id,DataScope,order_product,powerdept,order_statue";
+        $this->hedVerify($keys);
+        $result = $this->order->getactivityOrder($this->dataArr);
+        if (count($result) >= 0) {
+            $resulArr = build_resulArr('D000', true, '获取成功', json_encode($result));
+            http_data(200, $resulArr, $this);
+        } else {
+            $resulArr = build_resulArr('D003', false, '获取失败', []);
+            http_data(200, $resulArr, $this);
+        }
+    }
+    public function getcourseRow()
+    {
+        $keys="pages,rows,order_id,DataScope,order_product,powerdept,order_statue";
+        $this->hedVerify($keys);
+        $result = $this->order->getcourseOrder($this->dataArr);
+        if (count($result) >= 0) {
+            $resulArr = build_resulArr('D000', true, '获取成功', json_encode($result));
+            http_data(200, $resulArr, $this);
+        } else {
+            $resulArr = build_resulArr('D003', false, '获取失败', []);
+            http_data(200, $resulArr, $this);
+        }
+    }
+    public function getdetialOrder()
+    {
+        $keys="pages,rows,order_id";
+        $this->hedVerify($keys);
+        $result = $this->order->getdetialOrder($this->dataArr);
+        if (count($result) >= 0) {
+            $resulArr = build_resulArr('D000', true, '获取成功', json_encode($result));
+            http_data(200, $resulArr, $this);
+        } else {
+            $resulArr = build_resulArr('D003', false, '获取失败', []);
+            http_data(200, $resulArr, $this);
+        }
+    }
+
+	public function yesornoRow()//同意，不同意
+	{
+		$keys="order_id,ID,order_capid,order_deptid,members_id,order_customer_name,order_customer_phone,order_refund_rate";
+		$this->hedVerify($keys);
+//		$this->hedVerify();
+		$result = $this->order->modifyyesorno($this->dataArr, $this->userArr['Mobile']);
+		if (count($result) > 0) {
+			$resulArr = build_resulArr('D000', true, '修改成功', []);
+			http_data(200, $resulArr, $this);
+		} else {
+			$resulArr = build_resulArr('D003', false, '修改失败', []);
+			http_data(200, $resulArr, $this);
+		}
+	}
+
+    public function modifypriceRow()//修改价格
+    {
+        $keys="order_id,order_price";
+        $this->hedVerify($keys);
+//		$this->hedVerify();
+        $result = $this->order->modifyprice($this->dataArr, $this->userArr['Mobile']);
+        if (count($result) > 0) {
+            $resulArr = build_resulArr('D000', true, '修改成功', []);
+            http_data(200, $resulArr, $this);
+        } else {
+            $resulArr = build_resulArr('D003', false, '修改失败', []);
+            http_data(200, $resulArr, $this);
+        }
+    }
+
+	public function paymentRow() //支付
+	{
+		$keys="ID";
+		$this->hedVerify($keys);
+		$result = $this->order->payment($this->dataArr, $this->userArr['Mobile']);
+		if (count($result) > 0) {
+			$resulArr = build_resulArr('D000', true, '支付成功', []);
+			http_data(200, $resulArr, $this);
+		} else {
+			$resulArr = build_resulArr('D003', false, '支付失败', []);
+			http_data(200, $resulArr, $this);
+		}
+	}
+
+	public function shippedRow() //卖家已发货
+	{
+		$keys="order_id";
+		$this->hedVerify($keys);
+//		$this->hedVerify();
+		$result = $this->order->shipped($this->dataArr, $this->userArr['Mobile']);
+		if (count($result) > 0) {
+			$resulArr = build_resulArr('D000', true, '已发货', []);
+			http_data(200, $resulArr, $this);
+		} else {
+			$resulArr = build_resulArr('D003', false, '修改失败', []);
+			http_data(200, $resulArr, $this);
+		}
+
+	}
+
+    public function receivedgoodRow() //确认收货
+    {
+        $keys="order_id";
+        $this->hedVerify($keys);
+//		$this->hedVerify();
+        $result = $this->order->receivedgood($this->dataArr, $this->userArr['Mobile']);
+        if (count($result) > 0) {
+            $resulArr = build_resulArr('D000', true, '已确认收货', []);
+            http_data(200, $resulArr, $this);
+        } else {
+            $resulArr = build_resulArr('D003', false, '不能确认收货', []);
+            http_data(200, $resulArr, $this);
+        }
+    }
+
+    public function aftersalesRow()  //申请售后
+    {
+        $keys="order_id,orderitem_id";
+        $this->hedVerify($keys);
+//		$this->hedVerify();
+        $result = $this->order->aftersales($this->dataArr);
+        if (count($result) > 0) {
+            $resulArr = build_resulArr('D000', true, '申请成功', []);
+            http_data(200, $resulArr, $this);
+        } else {
+            $resulArr = build_resulArr('D003', false, '申请失败', []);
+            http_data(200, $resulArr, $this);
+        }
+
+    }
+
+    public function manyimageupload()  //申请售后时，多图片上传
+    {
 //        $keys="order_id";
 //        $this->hedVerify($keys);
-////		$this->hedVerify();
-//        $result = $this->order->modifystate($this->dataArr, $this->userArr['Mobile']);
-//        if (count($result) > 0) {
-//            $resulArr = build_resulArr('D000', true, '修改成功', []);
-//            http_data(200, $resulArr, $this);
-//        } else {
-//            $resulArr = build_resulArr('D003', false, '修改失败', []);
-//            http_data(200, $resulArr, $this);
-//        }
-//
-//    }
-//    public function showQuestion()  //查看电子问卷
-//    {
-//        $keys="order_id";
-//        $this->hedVerify($keys);
-////		$this->hedVerify();
-//        $result = $this->order->showquestion($this->dataArr);
-//        if (count($result) > 0) {
-//            $resulArr = build_resulArr('D000', true, '显示成功', json_encode($result));
-//            http_data(200, $resulArr, $this);
-//        } else {
-//            $resulArr = build_resulArr('D003', false, '显示失败', []);
-//            http_data(200, $resulArr, $this);
-//        }
-//
-//    }
-//    public function showContract()  //查看协议
-//    {
-//        $keys="order_id";
-//        $this->hedVerify($keys);
-////		$this->hedVerify();
-//        $result = $this->order->showcontract($this->dataArr);
-//        if (count($result) > 0) {
-//            $resulArr = build_resulArr('D000', true, '显示成功', json_encode($result));
-//            http_data(200, $resulArr, $this);
-//        } else {
-//            $resulArr = build_resulArr('D003', false, '显示失败', []);
-//            http_data(200, $resulArr, $this);
-//        }
-//
-//    }
-//    public function addCertificate()  //新增电子凭证
-//    {
-//        $keys="certificate_num,certificate_type,certificate_name,certificate_path,certificate_orderid,certificate_custome";
-//        $this->hedVerify($keys);
-////		$this->hedVerify();
-//        $result = $this->order->addcertificate($this->dataArr, $this->userArr['Mobile']);
-//        if (count($result) > 0) {
-//            $resulArr = build_resulArr('D000', true, '新增成功', []);
-//            http_data(200, $resulArr, $this);
-//        } else {
-//            $resulArr = build_resulArr('D003', false, '新增失败', []);
-//            http_data(200, $resulArr, $this);
-//        }
-//
-//    }
-//    public function pdfuploaddetail()  //上传pdf
-//    {
-////        $keys="order_id";
-////        $this->hedVerify($keys);
-////		$this->hedVerify();
-//        $result = $this->order->pdfuploaddetail($this->dataArr);
-//        if (count($result) > 0) {
-//            $resulArr = build_resulArr('D000', true, '上传成功', json_encode($result));
-//            http_data(200, $resulArr, $this);
-//        } else {
-//            $resulArr = build_resulArr('D003', false, '上传失败', []);
-//            http_data(200, $resulArr, $this);
-//        }
-//
-//    }
-//    public function getpdf()   //获取PDF
-//    {
-//        $keys="certificate_path";
-//        $this->hedVerify($keys);
-////		$this->hedVerify();
-//        $result = $this->order->getpdf($this->dataArr);
-//        if (count($result) > 0) {
-//            $resulArr = build_resulArr('D000', true, '显示成功', json_encode($result));
-//            http_data(200, $resulArr, $this);
-//        } else {
-//            $resulArr = build_resulArr('D003', false, '显示失败', []);
-//            http_data(200, $resulArr, $this);
-//        }
-//
-//    }
-//
-//    public function uploadhealth()   //体检报告下载
-//    {
-//        $keys="order_id";
-//        $this->hedVerify($keys);
-////		$this->hedVerify();
-//        $result = $this->order->uploadhealth($this->dataArr);
-//        if (count($result) > 0) {
-//            $resulArr = build_resulArr('D000', true, '下载成功', json_encode($result));
-//            http_data(200, $resulArr, $this);
-//        } else {
-//            $resulArr = build_resulArr('D003', false, '下载失败', []);
-//            http_data(200, $resulArr, $this);
-//        }
-//
-//    }
-//    public function showhealth()   //查看体检报告
-//    {
-//        $keys="order_id";
-//        $this->hedVerify($keys);
-////		$this->hedVerify();
-//        $result = $this->order->showhealth($this->dataArr);
-//        if (count($result) > 0) {
-//            $resulArr = build_resulArr('D000', true, '查看成功', json_encode($result));
-//            http_data(200, $resulArr, $this);
-//        } else {
-//            $resulArr = build_resulArr('D003', false, '查看失败', []);
-//            http_data(200, $resulArr, $this);
-//        }
-//
-//    }
+//		$this->hedVerify();
+        $result = $this->order->manyimageupload($this->dataArr);
+        if (count($result) > 0) {
+            $resulArr = build_resulArr('D000', true, '上传成功', json_encode($result));
+            http_data(200, $resulArr, $this);
+        } else {
+            $resulArr = build_resulArr('D003', false, '上传失败', []);
+            http_data(200, $resulArr, $this);
+        }
+
+    }
+
+    public function readmaneypic()  //读取目录下多图片
+    {
+        $keys="orderitem_image_refused";
+        $this->hedVerify($keys);
+//		$this->hedVerify();
+        $result = $this->order->readmaneypic($this->dataArr);
+        if (count($result) > 0) {
+            $resulArr = build_resulArr('D000', true, '新增成功', json_encode($result));
+            http_data(200, $resulArr, $this);
+        } else {
+            $resulArr = build_resulArr('D003', false, '新增失败', []);
+            http_data(200, $resulArr, $this);
+        }
+
+    }
+
+    public function selleragree()   //卖家是否同意
+    {
+        $keys="order_id,orderitem_id";
+        $this->hedVerify($keys);
+//		$this->hedVerify();
+        $result = $this->order->selleragree($this->dataArr, $this->userArr['Mobile']);
+        if (count($result) > 0) {
+            $resulArr = build_resulArr('D000', true, '修改成功', []);
+            http_data(200, $resulArr, $this);
+        } else {
+            $resulArr = build_resulArr('D003', false, '修改失败', []);
+            http_data(200, $resulArr, $this);
+        }
+
+    }
+
+    public function aftersalessuccess()   //售后结束，只有状态4可以点
+    {
+        $keys="order_id";
+        $this->hedVerify($keys);
+//		$this->hedVerify();
+        $result = $this->order->aftersalessuccess($this->dataArr, $this->userArr['Mobile']);
+        if (count($result) > 0) {
+            $resulArr = build_resulArr('D000', true, '售后成功', []);
+            http_data(200, $resulArr, $this);
+        } else {
+            $resulArr = build_resulArr('D003', false, '售后失败', []);
+            http_data(200, $resulArr, $this);
+        }
+
+    }
 
 
 }

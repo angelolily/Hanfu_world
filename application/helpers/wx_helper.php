@@ -53,7 +53,7 @@ function refund_order_check($order_id){
     return $pay->refund->queryByOutTradeNumber($order_id);
 }
 /**
- * 获取用户支付状态
+ * 响应退款回调通知
  **/
 function respond_notify_refund(){
     $pay = Factory::payment($GLOBALS['config']);

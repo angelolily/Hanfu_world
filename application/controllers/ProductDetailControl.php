@@ -252,8 +252,19 @@ class ProductDetailControl extends CI_Controller{
             http_data(200, $resultArr, $this);
         }
         $res[0]['commodity_cover']="https://hftx.fzz.cn/public/commoditycover/".$res[0]['commodity_cover'];
-        $res[0]['commodity_graphic']="https://hftx.fzz.cn/public/commoditygraphic/".$res[0]['commodity_graphic'];
+        if(!strstr($res[0]['commodity_graphic'],"https://")){
+            $res[0]['commodity_graphic']="https://hftx.fzz.cn/public/commoditygraphic/".$res[0]['commodity_graphic'];
+        }
         $resultArr = build_resultArr('GCI000', TRUE, 0,'获取目标商品信息成功', $res[0]);
+        http_data(200, $resultArr, $this);
+    }
+    public function get_commodity_editor(){
+        $res = $this->productdetail->get_commodity_editor($this->receive_data);
+        if(!$res){
+            $resultArr = build_resultArr('GCE001', FALSE, 0,'获取目标商品富文本图文内容出错', null );
+            http_data(200, $resultArr, $this);
+        }
+        $resultArr = build_resultArr('GCE000', TRUE, 0,'获取目标商品富文本图文内容成功', $res[0]['commodity_graphic_tag']);
         http_data(200, $resultArr, $this);
     }
     public function gte_activity_info(){
@@ -328,7 +339,7 @@ class ProductDetailControl extends CI_Controller{
         $resultArr = build_resultArr('USI000', TRUE, 0,'更新用户信息成功', null);
         http_data(200, $resultArr, $this);
     }
-    public function test(){
+    public function save_editor_img(){
         $file = $_FILES['file_1'];
         $file_name = time().rand(100,999).$this->input->post('name');
         $path = './uploads/img';
@@ -353,7 +364,7 @@ class ProductDetailControl extends CI_Controller{
                 $resultArr = build_resultArr('UI002', FALSE, 0,'存储照片失败', null );
                 http_data(200, $resultArr, $this);
             }
-            $base_url='http://'.$_SERVER['HTTP_HOST'].substr($_SERVER['PHP_SELF'],0,strrpos($_SERVER['PHP_SELF'],'/index.php')+1);
+            $base_url='https://'.$_SERVER['HTTP_HOST'].substr($_SERVER['PHP_SELF'],0,strrpos($_SERVER['PHP_SELF'],'/index.php')+1);
             $res_arr = [];
             $res_url = $base_url.'uploads/img/'.$file_name.$ex_name;
             $res_obj = [

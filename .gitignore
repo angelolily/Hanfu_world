@@ -29,3 +29,7 @@ application/logs/*
 /public/activitygraphic/*
 /public/commoditycover/*
 /public/commoditygraphic/*
+
+*.png
+*.jpg
+*.jpeg

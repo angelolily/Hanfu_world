@@ -139,7 +139,7 @@ class RoleControl extends CI_Controller
 		$this->hedVerify($keys);
 //		$this->hedVerify();
 		$result = $this->role->distriData($this->dataArr);
-		if (count($result) > 0) {
+		if ($result) {
 			$resulArr = build_resulArr('D000', true, '设置成功', json_encode($result));
 			http_data(200, $resulArr, $this);
 		} else {
