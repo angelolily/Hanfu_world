@@ -858,9 +858,9 @@ class wProductStore extends HTY_service
 
             $url="https://hftx.fzz.cn/public/htmlcover/".$fileName;
             $fileNamePng=time().".png";
-            $pngSavePath="D:\\phpstudy_pro\\WWW\\Hanfu-World\\public\\htmlcover\\".$fileNamePng;
-            $jsPath = 'D:\\capture.js';
-            $command = "D:\\phantomjs\\bin\\phantomjs {$jsPath}  {$url}  {$pngSavePath}";
+            $pngSavePath="./public/htmlcover/".$fileNamePng;
+            $jsPath = './public/htmlcover/capture.js';
+            $command = "./public/htmlcover/phantomjs {$jsPath}  {$url}  {$pngSavePath}";
             $result = @exec($command );
             if(file_exists($savePath.$fileNamePng)){
                 $appdata['Data']="https://hftx.fzz.cn/public/htmlcover/".$fileNamePng;
