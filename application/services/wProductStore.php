@@ -860,7 +860,7 @@ class wProductStore extends HTY_service
             $fileNamePng=time().".png";
             $pngSavePath="./public/htmlcover/".$fileNamePng;
             $jsPath = './public/htmlcover/capture.js';
-            $command = "./public/htmlcover/phantomjs {$jsPath}  {$url}  {$pngSavePath}";
+            $command = "./public/htmlcover/phantomjs/phantomjs {$jsPath}  {$url}  {$pngSavePath}";
             $result = @exec($command );
             if(file_exists($savePath.$fileNamePng)){
                 $appdata['Data']="https://hftx.fzz.cn/public/htmlcover/".$fileNamePng;
