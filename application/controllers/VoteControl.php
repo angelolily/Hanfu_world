@@ -114,6 +114,28 @@ class VoteControl extends CI_Controller
 
     }
 
+    /**
+     * Notes:修改票数
+     * User: ljx
+     * DateTime: 2021/6/18 10:51
+     */
+    public function modynumvoteRow()//修改票数
+    {
+        $keys="vote_poll,vote_id";
+        $this->hedVerify($keys);
+        $result = $this->vote->modynumvote($this->dataArr);
+        if (count($result) >= 0) {
+            $resulArr = build_resulArr('D000', true, '获取成功', json_encode($result));
+            http_data(200, $resulArr, $this);
+        } else {
+            $resulArr = build_resulArr('D003', false, '获取失败', []);
+            http_data(200, $resulArr, $this);
+        }
+
+//        $resulArr = build_resulArr('D003', true, 'false', null);
+//        http_data(200, $resulArr, $this);
+    }
+
 
 
 

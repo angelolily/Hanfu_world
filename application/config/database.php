@@ -75,10 +75,9 @@ $query_builder = TRUE;
 
 $db['default'] = array(
 	'dsn'	=> '',
-//	'hostname' => '124.70.77.122',
-	'hostname' => '118.195.190.58',
-	'username' => 'htysg',
-	'password' => 'htysgabc',
+	'hostname' => 'localhost',
+	'username' => 'root',
+	'password' => 'root',
 	'database' => 'Hanfu-world-db',
 	'dbdriver' => 'mysqli',
 	'dbprefix' => '',

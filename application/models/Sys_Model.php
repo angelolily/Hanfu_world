@@ -228,6 +228,21 @@ class Sys_Model extends CI_Model
         $rows_arr=$query->result_array();
         return $rows_arr;
     }
+
+    //$sum  要求和的字段名  $name变成的字段名  $taname表名
+    public function table_sumRow($taname,$wheredata=array(),$sum="",$name=""){
+
+        if(count($wheredata)>0){
+            $this->db->where($wheredata);//判断需不需where要查询
+        }
+        if($sum!=""){
+            $this->db->select_sum($sum,$name);
+        }
+        $query = $this->db->get($taname);
+        $ss=$this->db->last_query();
+        $rows_arr=$query->result_array();
+        return $rows_arr;
+    }
 //搜索参数页面 分页
 //	public function get_searchdata($pages,$rows,$wheredata,$likedata){
 //

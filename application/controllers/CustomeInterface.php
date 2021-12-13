@@ -323,12 +323,15 @@ class CustomeInterface extends CI_Controller
     public function newAdvert()
     {
 
+
         $agentinfo = file_get_contents('php://input');
         $info = json_decode($agentinfo,true);
 
         if(count($info)>0)
         {
-
+            $info=bykey_reitem($info, 'phone');
+            $info=bykey_reitem($info, 'timestamp');
+            $info=bykey_reitem($info, 'signature');
             $info['created_time']=date("Y-m-d H:i");
             $resultNum = $this->wproductstore->addGeneral("advert", $info);
             if (count($resultNum )> 0) {
@@ -364,6 +367,9 @@ class CustomeInterface extends CI_Controller
 
         if(count($info)>0)
         {
+            $info=bykey_reitem($info, 'phone');
+            $info=bykey_reitem($info, 'timestamp');
+            $info=bykey_reitem($info, 'signature');
             $info['updated_time']=date("Y-m-d H:i");
             $where['advertId']=$info['advertId'];
             $resultNum = $this->wproductstore->updateGeneral("advert",$info,$where);
@@ -397,6 +403,9 @@ class CustomeInterface extends CI_Controller
 
         if(count($info)>0)
         {
+            $info=bykey_reitem($info, 'phone');
+            $info=bykey_reitem($info, 'timestamp');
+            $info=bykey_reitem($info, 'signature');
 
             $resultNum = $this->wproductstore->delGeneral("advert", $info);
             if (count($resultNum )> 0) {
@@ -428,14 +437,14 @@ class CustomeInterface extends CI_Controller
         if(count($info)>0) {
             switch ($info['type'])
             {
-                case 1:$tableName="competition";$fields="competition_id,competition_name";break;
-                case 2:$tableName="activity";$fields="activity_id,activity_name";break;
-                case 3:$tableName="competition";$fields="competition_id,competition_name";break;
-                default:$tableName="commodity";$fields="commodity_id,commodity_name";break;
+                case 1:$tableName="competition";$fields="competition_id,competition_name,competition_status";$where=['competition_status!='=>'未发布'];break;
+                case 2:$tableName="activity";$fields="activity_id,activity_name,activity_status";$where=['activity_status!='=>'未发布'];break;
+                case 3:$tableName="course";$fields="course_id,course_name,course_status";$where=['course_status!='=>'未发布'];break;
+                default:$tableName="commodity";$fields="commodity_id,commodity_name,commodity_status";$where=['commodity_status!='=>'已发布'];break;
             }
 
 
-            $requestData = $this->wproductstore->getAllGeneral($tableName,$fields);
+            $requestData = $this->wproductstore->getAllGeneral($tableName,$fields,$where);
 
             http_data(200, $requestData, $this);
 
@@ -447,6 +456,40 @@ class CustomeInterface extends CI_Controller
             http_data(200, $resulArr, $this);
         }
 
+
+    }
+
+    /**
+     * 14、修改会员等级
+     * User:
+     *
+     */
+
+    public function updateisTrue()
+    {
+
+        $agentinfo = file_get_contents('php://input');
+        $info = json_decode($agentinfo,true);
+
+        if(count($info)>0)
+        {
+            $info=bykey_reitem($info, 'phone');
+            $info=bykey_reitem($info, 'timestamp');
+            $info=bykey_reitem($info, 'signature');
+            $where['members_id']=$info['members_id'];
+            $resultNum = $this->wproductstore->updateGeneral("members",$info,$where);
+            if (count($resultNum )> 0) {
+                $resulArr = build_resulArr('ADU00', true, '修改成功', []);
+                http_data(200, $resulArr, $this);
+            } else {
+                $resulArr = build_resulArr('ADU02', false, '修改失败', []);
+                http_data(200, $resulArr, $this);
+            }
+        }
+        else{
+            $resulArr = build_resulArr('ADU01', false, '参数接收失败', []);
+            http_data(200, $resulArr, $this);
+        }
 
     }
 
@@ -562,99 +605,41 @@ class CustomeInterface extends CI_Controller
 
     }
 
-//    public function image3()
-//    {
-//
-//        $dir="./public/enroll";
-//
-//        $file_arr = scandir($dir);
-//
-//        $new_arr = [];
-//
-//        foreach ( $file_arr as $item)
-//        {
-//            if($item!="." && $item!="..")
-//            {
-//                $dirs="./public/enroll/".$item;
-//                $files_arrs = scandir($dirs);
-//                foreach ($files_arrs as $items )
-//                {
-//                    if($items!="." && $items!="..")
-//                    {
-//                        $ord=$dirs."/".$items;
-//                        $des="./public/enroll2/".$item;
-//                        if(is_dir($des) or mkdir($des))
-//                        {
-//
-//                        }
-//                        $content = file_get_contents($ord);
-//                        $size = strlen($content);
-//                        $size=$size/1024;
-//                        $des="./public/enroll2/".$item."/".$items;
-//                        if($size>900)
-//                        {
-//                            imageSize($ord,$des);
-//                        }
-//                        else
-//                        {
-//
-//                            if(copy($ord,$des))
-//
-//                            {
-//
-//                                array_push($new_arr,$ord.'-ok');
-//
-//                            }
-//
-//                            else
-//                            {
-//                                array_push($new_arr,$ord.'-fail');
-//                            }
-//
-//                        }
-//
-//                    }
-//
-//                }
-//
-//
-//            }
-//
-//        }
-//
-//
-//
-//
-//        http_data(200, $new_arr, $this);
-//
-//
-//
-//    }
-//
-//
-//    public function testSend(){
-//
-//
-//
-//        $requestData=$this->wechatloginregister->sendMSG();
-//
-//    }
 
 
 
 
 
 
+    /**
+     * html转图片
+     */
+
+    public function HtmlConverPng(){
+
+        //$agentinfo = file_get_contents('php://input');
+
+        $agentinfo= $_POST;
+
+        if(array_key_exists("content",$agentinfo)){
+            $result = $this->wproductstore->htmltopng($agentinfo['content']);
+            if ($result['Success']) {
+    
+                http_data(200, $result, $this);
+            } else {
+    
+                http_data(200, $result, $this);
+            }
+        }
+
+        $appdata['Data']=[];
+        $appdata["ErrorCode"]="";
+        $appdata["ErrorMessage"]="data accept error";
+        $appdata["Success"]=false;
+        $appdata["Status_Code"]="TRA201";
+        http_data(200, appdata, $this);
 
 
-
-
-
-
-
-
-
-
-
+    }
 
 }

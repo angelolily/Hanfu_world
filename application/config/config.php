@@ -223,7 +223,7 @@ $config['allow_get_array'] = TRUE;
 | your log files will fill up very fast.
 |
 */
-$config['log_threshold'] = 2;
+$config['log_threshold'] = 1;
 
 /*
 |--------------------------------------------------------------------------
@@ -521,10 +521,20 @@ $config['rewrite_short_tags'] = FALSE;
 | Array:		array('10.0.1.200', '192.168.5.0/24')
 */
 $config['proxy_ips'] = '';
+
 $config['class'] =array('service');
+
 /*
  * 配置在服务器中导出excel存放的路径
 */
+$config['serverExcelFilePata']='https://hanfu.fzz.cn/public/outputExcel/';
+
+/*
+ * 配置在服务器中导出所有图片存放的路径
+*/
+$config['serverZipFilePata']='https://hanfu.fzz.cn/public/tempPhotoSave/';
+
+/*
+ * 配置在服务器中所有图片的路径
+*/
 $config['localpath']='https://hftx.fzz.cn';
-$config['Back_integral']=0.01;//返积分比例，与所购金额相乘
-$config['serverExcelFilePata']='https://hftx.fzz.cn/public/outputExcel/';

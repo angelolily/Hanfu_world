@@ -155,9 +155,21 @@ class CompetitionControl extends CI_Controller
 			$resulArr = build_resulArr('D003', false, '获取失败', []);
 			http_data(200, $resulArr, $this);
 		}
-
-
 	}
+
+    public function getonlyRow()
+    {
+        $keys="DataScope,powerdept,rows,pages,competition_id";
+        $this->hedVerify($keys);
+        $result = $this->competition->getonlycompetition($this->dataArr);
+        if (count($result) >= 0) {
+            $resulArr = build_resulArr('D000', true, '获取成功', json_encode($result));
+            http_data(200, $resulArr, $this);
+        } else {
+            $resulArr = build_resulArr('D003', false, '获取失败', []);
+            http_data(200, $resulArr, $this);
+        }
+    }
 
     public function publishRow()
     {
@@ -203,8 +215,6 @@ class CompetitionControl extends CI_Controller
             $resulArr = build_resulArr('D003', false, '获取失败', []);
             http_data(200, $resulArr, $this);
         }
-
-
     }
 
 	public function delRow()
@@ -224,7 +234,7 @@ class CompetitionControl extends CI_Controller
 
 	public function modifyRow()
     {
-       $keys="phone";
+        $keys="phone";
         $this->hedVerify($keys);
 //		$this->hedVerify();
         $result = $this->competition->modifycompetition($this->dataArr, $this->userArr['Mobile']);
@@ -237,23 +247,23 @@ class CompetitionControl extends CI_Controller
         }
     }
 
-    public function modifyallRow()
-    {
-//        $keys="competition_id,competition_type,competition_name,competition_graphic,competition_cover,competition_sex_limit,competition_age_limitup,competition_age_limitdown";
-        $this->hedVerify();
-//		$this->hedVerify();
-        $result = $this->competition->modifyallcompetition($this->dataArr, $this->userArr['Mobile']);
-        if ($result!=0) {
-            $resulArr = build_resulArr('D000', true, '修改成功', []);
-            http_data(200, $resulArr, $this);
-        } else {
-            $resulArr = build_resulArr('D003', false, '修改失败', []);
-            http_data(200, $resulArr, $this);
-        }
-
-
-
-	}
+//    public function modifyallRow()
+//    {
+//        $keys="phone";
+//        $this->hedVerify($keys);
+////		$this->hedVerify();
+//        $result = $this->competition->modifyallcompetition($this->dataArr, $this->userArr['Mobile']);
+//        if ($result!=0) {
+//            $resulArr = build_resulArr('D000', true, '修改成功', []);
+//            http_data(200, $resulArr, $this);
+//        } else {
+//            $resulArr = build_resulArr('D003', false, '修改失败', []);
+//            http_data(200, $resulArr, $this);
+//        }
+//
+//
+//
+//	}
 
     public function showRow()
     {

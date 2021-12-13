@@ -38,7 +38,7 @@ class Course extends HTY_service
     {
         $resultvalue = array();
 
-        $dir = './public/comgraphic';
+        $dir = './public/coursegraphic';
         $pptfiles=[];
         if (is_dir($dir) or mkdir($dir)) {
             $files=$_FILES;
@@ -64,7 +64,7 @@ class Course extends HTY_service
     //获取图片详情
     public function getimagedetail($pic){
         $resultvalue=array();
-        $dir_original='./public/comgraphic';
+        $dir_original='./public/coursegraphic';
         $handler = opendir($dir_original);
         if($handler){
             $dir_original=str_replace('.','',$dir_original);
@@ -83,7 +83,7 @@ class Course extends HTY_service
     {
         $resultvalue = array();
 
-        $dir = './public/comcover';
+        $dir = './public/coursecover';
         $pptfiles=[];
         if (is_dir($dir) or mkdir($dir)) {
             $files=$_FILES;
@@ -110,7 +110,7 @@ class Course extends HTY_service
     //获取图片封面
     public function getimagecover($pic){
         $resultvalue=array();
-        $dir_original='./public/comcover';
+        $dir_original='./public/coursecover';
         //2、循环的读取目录下的所有文件
         //其中$filename = readdir($handler)是每次循环的时候将读取的文件名赋值给$filename，为了不陷于死循环，所以还要让$filename !== false。一定要用!==，因为如果某个文件名如果叫’0′，或者某些被系统认为是代表false，用!=就会停止循环*/
         $handler = opendir($dir_original);
@@ -144,7 +144,7 @@ class Course extends HTY_service
     public function get_coursedata($pages,$rows,$wheredata){
         //Select SQL_CALC_FOUND_ROWS UserId,UserName,base_dept.DeptName,Mobile,Birthday,UserStatus,UserEmail,Sex,Remark,IsAdmin,UserRol,UserPost,base_user.CREATED_TIME from base_user,base_dept where base_user.DeptId = base_dept.DeptId
         $offset=($pages-1)*$rows;//计算偏移量
-        $sql_query="Select DISTINCT course_id,course_name,course_describe,course_type,course_graphic,course_cover,course_ishome,course_sex_limit,course_limitup,course_limitdown,course_number_limit,course_beginDate,course_endDate,course_signBegin,course_signEnd,course_signPrice,course_signIntegral,course_status,course_signQRcode from course  where  1=1  ";
+        $sql_query="Select * from course  where  1=1  ";
         $sql_query_where=$sql_query.$wheredata;
         if($wheredata!="")
         {
@@ -171,7 +171,7 @@ class Course extends HTY_service
     public function publishaa($postId = [])
     {
         $where['course_signQRcode']=getCode("pages/sign/sign","course_id",$postId['course_id']);
-        $where['course_status']="报名中";
+        $where['course_status']="已发布";
         $result=$this->Sys_Model->table_updateRow('course', $where, array('course_id' => $postId['course_id']));
         return $result;
     }
@@ -186,7 +186,9 @@ class Course extends HTY_service
             if ($postname[0]['course_id'] == $values['course_id']) {
                 $resluts=$this->Sys_Model->table_updateRow('course', $values, array('course_id' => $values['course_id']));
             }
+            return $resluts;
         }
+        $resluts=$this->Sys_Model->table_updateRow('course', $values, array('course_id' => $values['course_id']));
         return $resluts;
     }
 //下拉
@@ -200,6 +202,14 @@ class Course extends HTY_service
     public function finallycourse($postId = [])
     {
         $where['course_status']="已结束";
+        $result=$this->Sys_Model->table_updateRow('course', $where, array('course_id' => $postId['course_id']));
+        return $result;
+    }
+
+//下架
+    public function finallycommodity($postId = [])
+    {
+        $where['course_status']="未发布";
         $result=$this->Sys_Model->table_updateRow('course', $where, array('course_id' => $postId['course_id']));
         return $result;
     }

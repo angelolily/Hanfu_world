@@ -41,8 +41,8 @@ class Sign extends HTY_service
                 if ($searchWhere['sign_competition_id'] != '') {//赛事ID  下拉
                     $where = $where . " and sign_competition_id in('{$searchWhere['sign_competition_id']}')";
                 }
-                if ($searchWhere['competition_dept'] != '') {//bumenid
-                    $where = $where . " and competition_dept in('{$searchWhere['competition_dept']}')";
+                if ($searchWhere['DeptId'] != '') {//bumenid
+                    $where = $where . " and DeptId in('{$searchWhere['DeptId']}')";
                 }
                 $pages = $searchWhere['pages'];
                 $rows = $searchWhere['rows'];
@@ -52,7 +52,7 @@ class Sign extends HTY_service
                     for ($i = 1; $i < count($all); $i++) {
                         $DeptId = $DeptId . ",'" . $all[$i] . "'";
                     }
-                    $where = $where . " and competition_dept  in({$DeptId})";
+                    $where = $where . " and DeptId  in({$DeptId})";
                 }
                 $deptTmpArr=$this->get_Signdata($pages, $rows,$where,$like);
             }
@@ -66,7 +66,7 @@ class Sign extends HTY_service
 public function get_Signdata($pages,$rows,$wheredata,$likedata){
     //Select SQL_CALC_FOUND_ROWS UserId,UserName,base_dept.DeptName,Mobile,Birthday,UserStatus,UserEmail,Sex,Remark,IsAdmin,UserRol,UserPost,base_user.CREATED_TIME from base_user,base_dept where base_user.DeptId = base_dept.DeptId
     $offset=($pages-1)*$rows;//计算偏移量
-    $sql_query="Select DISTINCT sign_competition_id,competition_dept,sign_id,sign_name,sign_age,sign_sex,sign_national,sign_birthday,sign_card_num,sign_phone,sign_height,sign_weight,sign_shoes_size,sign_guardian_name,sign_guardian_phone,sign_live,sign_introduce,sign_picture,sign_image,sign_rate,competition_name,competition_dept_name  from sign_up,competition where competition.competition_id=sign_up.sign_competition_id  where 1=1 ";
+    $sql_query="Select DISTINCT sign_competition_id,DeptId,sign_id,sign_name,sign_age,sign_sex,sign_national,sign_birthday,sign_card_num,sign_phone,sign_height,sign_weight,sign_shoes_size,sign_guardian_name,sign_guardian_phone,sign_live,sign_introduce,sign_picture,sign_image,sign_rate,DeptName,sign_introduce,sign_from  from sign_up,competition where competition.competition_id=sign_up.sign_competition_id  where 1=1 ";
     $sql_query_where=$sql_query.$wheredata;
     if($wheredata!="")
     {
@@ -76,7 +76,7 @@ public function get_Signdata($pages,$rows,$wheredata,$likedata){
         $sql_query=$sql_query_where." ".$likedata;
     }
     $sql_query_total=$sql_query;
-    $sql_query=$sql_query." order by competition_created_time desc limit ".$offset.",".$rows;
+    $sql_query=$sql_query." order by sign_created_time desc limit ".$offset.",".$rows;
 
     $query = $this->db->query($sql_query);
     $ss=$this->db->last_query();

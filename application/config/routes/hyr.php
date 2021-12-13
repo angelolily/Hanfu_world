@@ -20,5 +20,6 @@ $route['ch/confirm'] = 'ChargeControl/confirm';//确认收货
 $route['ch/refund'] = 'ChargeControl/refund';//申请退款
 $route['ch/logistics'] = 'ChargeControl/logistics';//买家填写物流单号
 $route['ch/getMP'] = 'ChargeControl/getMemberPrice';//获取会员折扣
+$route['ch/addCode'] = 'ChargeControl/addCode';//生成商品分享二维码
 
 

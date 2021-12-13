@@ -311,5 +311,34 @@ class ChargeControl extends CI_Controller{
             http_data(200, $resultArr, $this);
         }
     }
-
+    /**
+     * Notes:获取会员折扣
+     * User: hyr
+     * DateTime: 2021/7/26 10:19
+     */
+    public function getMemberPrice(){
+        $result = $this->charge->getMemberPrice($this->receive_data);
+        if (count($result) > 0) {
+            $resultArr = build_resultArr('gmp000', true, 0,'获取成功',json_encode($result));
+            http_data(200, $resultArr, $this);
+        } else {
+            $resultArr = build_resultArr('gmp002', false, 0,'获取失败', []);
+            http_data(200, $resultArr, $this);
+        }
+    }
+    /**
+     * Notes:生成二维码
+     * User: hyr
+     * DateTime: 2021/11/04 10:19
+     */
+    public function addCode(){
+        $result = $this->charge->addCode($this->receive_data);
+        if ($result!= 0) {
+            $resultArr = build_resultArr('ac000', true, 0,'获取成功',json_encode($result));
+            http_data(200, $resultArr, $this);
+        } else {
+            $resultArr = build_resultArr('ac002', false, 0,'获取失败', []);
+            http_data(200, $resultArr, $this);
+        }
+    }
 }

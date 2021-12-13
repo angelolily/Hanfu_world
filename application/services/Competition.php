@@ -45,7 +45,7 @@ class Competition extends HTY_service
                 $row['created_by'] = $by;
                 $row['relevancy_id'] = $competition;
                 $row['created_time'] = date('Y-m-d H:i');
-                $row['competition_sign_qrcode']=getCode("pages/detail/match","sid",$row['DeptId'].",".$competition);//报名
+                $row['competition_sign_qrcode']=getNormalCode("pages/detail/match","sid",$row['DeptId'].",".$competition);//报名
                 array_push($resluts,$row);
             }
             $this->Sys_Model->table_addRow("specification", $resluts, 2);
@@ -294,6 +294,52 @@ class Competition extends HTY_service
         $result["alldata"] = $r_total;
         return $result;
     }
+
+
+
+
+    public function getonlycompetition($searchWhere = []) //查询到赛事表
+    {
+        if($searchWhere['DataScope']) {
+            $where = "";
+            if (count($searchWhere) > 0) {
+                if ($searchWhere['competition_id'] != '') {//赛事ID  下拉
+                    $where = $where . " and competition_id in('{$searchWhere['competition_id']}')";
+                }
+                $pages = $searchWhere['pages'];
+                $rows = $searchWhere['rows'];
+                if($searchWhere['DataScope'] == 3 or $searchWhere['DataScope'] == 4){
+                    $where = $where." and competition_id in (select relevancy_id from specification where DeptId = '{$searchWhere['powerdept']}')";
+                }
+
+                $deptTmpArr=$this->get_Competitiononlydata($pages, $rows,$where);
+            }
+        }
+        return $deptTmpArr;
+
+    }
+
+//搜索赛事信息页面 分页
+    public function get_Competitiononlydata($pages,$rows,$wheredata){
+        //Select SQL_CALC_FOUND_ROWS UserId,UserName,base_dept.DeptName,Mobile,Birthday,UserStatus,UserEmail,Sex,Remark,IsAdmin,UserRol,UserPost,base_user.CREATED_TIME from base_user,base_dept where base_user.DeptId = base_dept.DeptId
+        $offset=($pages-1)*$rows;//计算偏移量
+        $sql_query="Select DISTINCT * from  competition  where 1=1 and competition_id is not null  ";
+        $sql_query_where=$sql_query.$wheredata;
+        if($wheredata!="")
+        {
+            $sql_query=$sql_query_where;
+        }
+        $sql_query_total=$sql_query;
+        $sql_query=$sql_query." order by competition_created_time desc limit ".$offset.",".$rows;
+        $query = $this->db->query($sql_query);
+        $ss=$this->db->last_query();
+        $r_total=$this->db->query($sql_query_total)->result_array();
+        $row_arr=$query->result_array();
+        $result['total']=count($r_total);//获取总行数
+        $result["data"] = $row_arr;
+        $result["alldata"] = $r_total;
+        return $result;
+    }
 	/**
 	 * Notes: 删除赛事数据
 	 * User: ljx
@@ -340,7 +386,7 @@ class Competition extends HTY_service
                     $row['created_by'] = $by;
                     $row['created_time'] = date('Y-m-d H:i');
                     $row['relevancy_id'] = $values['a']['competition_id'];
-                    $row['competition_sign_qrcode']=getCode("pages/detail/match","sid",$row['DeptId'].",".$values['a']['competition_id']);//报名
+                    $row['competition_sign_qrcode']=getNormalCode("match?".$row['DeptId'].",".$values['a']['competition_id']);//报名
                     array_push($resluts,$row);
                 }
                 $this->Sys_Model->table_addRow("specification", $resluts, 2);
@@ -364,7 +410,7 @@ class Competition extends HTY_service
             foreach ($values['b'] as $row){
                 $row['created_by'] = $by;
                 $row['created_time'] = date('Y-m-d H:i');
-                $row['competition_sign_qrcode']=getCode("pages/detail/match","sid",$row['DeptId'].",".$values['a']['competition_id']);//报名
+                $row['competition_sign_qrcode']=getNormalCode("match?".$row['DeptId'].",".$values['a']['competition_id']);//报名
                 array_push($resluts,$row);
             }
             $this->Sys_Model->table_addRow("specification", $resluts, 2);

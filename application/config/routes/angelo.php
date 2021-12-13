@@ -16,3 +16,5 @@ $route['wps/AdvertModify'] = 'CustomeInterface/updateAdvert';// 修改廣告
 $route['wps/getAdvert'] = 'CustomeInterface/getAdvertData';// 获取廣告
 $route['wps/AdvertDel'] = 'CustomeInterface/delAdvert';// 删除廣告
 $route['wps/getSkip'] = 'CustomeInterface/getTypeInfo';// 获取跳转
+$route['wps/upMembers'] = 'CustomeInterface/updateisTrue';// 审核会员
+$route['wps/Conver'] = 'CustomeInterface/HtmlConverPng';// html转换图片

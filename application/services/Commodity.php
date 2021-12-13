@@ -228,15 +228,14 @@ class Commodity extends HTY_service
         $totalArr = $this->Sys_Model->table_seleRow('commodity_spec_id,commodity_spec_name,commodity_size,amount,commodity_image,commodity_price  ', "commodity_spec", $where, $likedata = array());
         foreach ($totalArr as $row){
             if ($row['commodity_image']!=null) {
-                // 添加缩略图路径
                 $row['commodity_image'] = $this->config->item('localpath') . '/public/commoditygraphic/' . $row['commodity_image'];
+
             }
             array_push($ggg,$row);
         }
         $results = $this->Sys_Model->table_seleRow_limit("commodity_spec_id,commodity_spec_name,commodity_size,amount,commodity_image,commodity_price ", "commodity_spec", $where, $likedata = array(), $begin, $offset);
         foreach ($results as $row){
             if ($row['commodity_image']!=null){
-                // 添加缩略图路径
                 $row['commodity_image']=$this->config->item('localpath') . '/public/commoditygraphic/'.$row['commodity_image'] ;
             }
             array_push($hhh,$row);
@@ -294,7 +293,7 @@ class Commodity extends HTY_service
         //Select SQL_CALC_FOUND_ROWS UserId,UserName,base_dept.DeptName,Mobile,Birthday,UserStatus,UserEmail,Sex,Remark,IsAdmin,UserRol,UserPost,base_user.CREATED_TIME from base_user,base_dept where base_user.DeptId = base_dept.DeptId
         $offset=($pages-1)*$rows;//计算偏移量
         $sql_query="Select DISTINCT commodity_id,commodity_name,commodity_describe,commodity_status,commodity_type,commodity_graphic,commodity_cover,commodity_price,commodity_ishome,commodity_carriage,
-            commodity_integral,commodity_created_time from commodity  where  1=1 ";
+            commodity_integral,commodity_created_time,commodity_is_refund,commodity_is_integral from commodity  where  1=1 ";
         $sql_query_where=$sql_query.$wheredata;
         if($wheredata!="")
         {
@@ -377,6 +376,7 @@ class Commodity extends HTY_service
             $this->Sys_Model->table_del("commodity_spec",array('commodity_id' => $values['a']['commodity_id']));
             $resluts=[];
             foreach ($values['b'] as $row){
+                $row= bykey_reitem($row, 'id');
                 $row['commodity_spec_created_by'] = $by;
                 $row['commodity_spec_created_time'] = date('Y-m-d H:i');
                 $row['commodity_id'] = $values['a']['commodity_id'];

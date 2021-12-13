@@ -216,7 +216,20 @@ class ActivityControl extends CI_Controller
     }
 
 
-
+    public function lowactivity()
+    {
+        $keys="activity_id";
+        $this->hedVerify($keys);
+//		$this->hedVerify();
+        $result = $this->activity->lowactivity($this->dataArr);
+        if (count($result) > 0) {
+            $resulArr = build_resulArr('D000', true, '修改成功', []);
+            http_data(200, $resulArr, $this);
+        } else {
+            $resulArr = build_resulArr('D003', false, '修改失败', []);
+            http_data(200, $resulArr, $this);
+        }
+    }
 
 
 

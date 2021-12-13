@@ -183,8 +183,8 @@ class Order extends HTY_service
     public function getdetialOrder($searchWhere = [])
     {
         $offset=($searchWhere['pages']-1)*$searchWhere['rows'];//计算偏移量
-        $field='Select A.*,B.order_refund_price,B.order_price,B.order_mic_id ';
-        $sql_query=$field." from orderitem as A left join `order` as B on A.order_id=B.order_id where 1=1 "."and A.order_id= '".$searchWhere['order_id']."'";
+        $field='Select * ';
+        $sql_query=$field." from orderitem where 1=1 "."and order_id= '".$searchWhere['order_id']."'";
         $sql_query_total=$sql_query;
         $sql_query=$sql_query." order by orderitem_created_time desc limit ".$offset.",".$searchWhere['rows'];
         $query = $this->db->query($sql_query);

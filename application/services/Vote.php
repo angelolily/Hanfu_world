@@ -36,6 +36,10 @@ class Vote extends HTY_service
                 if ($searchWhere['competition_id'] != '') {//赛事ID  下拉
                     $where = $where . " and competition_id in('{$searchWhere['competition_id']}')";
                 }
+                if($searchWhere['vote_name']!="")
+                {
+                    $like=" and vote_name like '%{$searchWhere['vote_name']}%'";
+                }
                 if($searchWhere['DataScope']==1) {
                     if ($searchWhere['DeptId'] != '') {//赛事ID  下拉
                         $where = $where . " and DeptId in('{$searchWhere['DeptId']}')";
@@ -60,6 +64,7 @@ class Vote extends HTY_service
 	public function addData($indData = [])
     {
         $result=$this->Sys_Model->table_addRow("vote",$indData['a'],2);
+     
         if ($result){
             $value['competition_is_vate']=1;
             $value['competition_vote_qrcode']=getCode("pages/vote/vote","DeptId",$indData['a'][0]['DeptId'].",".$indData['a'][0]['competition_id']);//投票
@@ -72,7 +77,7 @@ class Vote extends HTY_service
 public function get_Votedata($pages,$rows,$wheredata,$likedata){
     //Select SQL_CALC_FOUND_ROWS UserId,UserName,base_dept.DeptName,Mobile,Birthday,UserStatus,UserEmail,Sex,Remark,IsAdmin,UserRol,UserPost,base_user.CREATED_TIME from base_user,base_dept where base_user.DeptId = base_dept.DeptId
     $offset=($pages-1)*$rows;//计算偏移量
-    $sql_query="Select DISTINCT vote_id,competition_id,competition_name,vote_begin,vote_end,vote_name,vote_phone,vote_image,vote_poll,DeptId,DeptName,Phone  from vote   where 1=1 ";
+    $sql_query="Select DISTINCT vote_id,competition_id,competition_name,vote_begin,vote_end,vote_name,vote_phone,vote_image,vote_poll,DeptId,DeptName,Phone,vote_created_time,sign_introduce,sign_from  from vote   where 1=1 ";
     $sql_query_where=$sql_query.$wheredata;
     if($wheredata!="")
     {
@@ -134,20 +139,13 @@ public function get_Votedata($pages,$rows,$wheredata,$likedata){
         return $result;
     }
 
-//    public function showvote($search){
-//        $where="";
-//        if ($search['competition_id'] != '') {
-//            $where = $where . " and sign_competition_id in('{$search['competition_id']}')";
-//        }
-//        if ($search['DeptId'] != '') {
-//            $where = $where . " and sign_up.DeptId in('{$search['DeptId']}')";
-//        }
-//        $where = $where . " and sign_statue ='成功报名' ";
-//        $pages=$search['pages'];
-//        $rows=$search['rows'];
-//        $result=$this->get_sign_limit($pages,$rows,$where);
-//        return $result;
-//    }
+    public function modynumvote($search){//修改票数
+	    $where=[];
+        $where['vote_poll']=$search['vote_poll'];
+        $returnInfo=$this->Sys_Model->table_updateRow('vote', $where, array('vote_id' => $search['vote_id']));//更新票数
+        return $returnInfo;
+    }
+
 //
 //
 //    //搜索报名信息页面 分页

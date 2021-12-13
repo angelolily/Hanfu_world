@@ -396,12 +396,12 @@ class wProductStore extends HTY_service
         }
     
         //通用查询不带where,分页
-        public function getAllGeneral($table,$fields)
+        public function getAllGeneral($table,$fields,$wheres=[])
         {
     
-    
-            $alladvert=$this->Custome_Model->table_seleRow($fields,$table,[],[]);
-    
+            $mywhere=$wheres;
+            $alladvert=$this->Custome_Model->table_seleRow($fields,$table,$mywhere,[]);
+            $ss=$this->db->last_query();
             if(count($alladvert)>0)
             {
     
@@ -832,632 +832,65 @@ class wProductStore extends HTY_service
         }
 
 
+    private function strToUtf8($str){
+        $encode = mb_detect_encoding($str, array("ASCII",'UTF-8',"GB2312","GBK",'BIG5'));
+        if($encode == 'UTF-8'){
+            return $str;
+        }else{
+            return mb_convert_encoding($str, 'UTF-8', $encode);
+        }
+    }
 
-    
+    public function htmltopng($strhtml){
 
+        $head="<html><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\" /><title></title></head><body>";
+        $temp="<head><meta charset=\"UTF-8\" /><meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\" /><meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\" /><title></title></head><body style=\"background: #ffffff;\">";
+        $end="</body></html>";
+        //$strhtml=$this->strToUtf8($strhtml);
+        $strhtml=$temp.$strhtml.$end;
+        $fileName=time().".html";
+        $savePath="./public/htmlcover/";
+        $file = fopen($savePath.$fileName,"w");
+        fwrite($file,$strhtml);
+        fclose($file);
 
-//
-//    /**
-//     * 首次添加订单
-//     * @param array $info 添加订单信息
-//     * @return array
-//     */
-//    public function OneAddOrder($info=[])
-//    {
-//        $appdata=[];
-//        if(count($info)>0)
-//        {
-//            $info['order_datetime']=date('Y-m-d H:i:s');
-//            $info['order_id']=time().rand(1111,9999);
-//            $isAddtrue=$this->Custome_Model->table_addRow("cell_order",$info);
-//            if($isAddtrue>0)
-//            {
-//                $appdata['Data']=[];
-//                $appdata["ErrorCode"]="";
-//                $appdata["ErrorMessage"]="订单添加成功";
-//                $appdata["Success"]=true;
-//                $appdata["Status_Code"]="ODA200";
-//            }
-//            else
-//            {
-//                $appdata['Data']=[];
-//                $appdata["ErrorCode"]="";
-//                $appdata["ErrorMessage"]="订单添加失败";
-//                $appdata["Success"]=false;
-//                $appdata["Status_Code"]="ODA201";
-//
-//            }
-//
-//        }
-//
-//
-//        return $appdata;
-//
-//    }
-//
-//
-//    /**
-//     * 获取预约记录
-//     * @param $info
-//     * @return array
-//     */
-//    public function getSubscribe($info)
-//    {
-//        $appdata=[];
-//        $oid=[];
-//        if(count($info)>0)
-//        {
-//            if($info['subscribe_id']==0)
-//            {
-//                $oid=['subscribe_custome'=>$info['subscribe_custome']];
-//            }
-//            else
-//            {
-//                $oid=['subscribe_id <='=>$info['subscribe_id'],'subscribe_custome'=>$info['subscribe_custome']];
-//            }
-//
-//
-//            $subscribe=$this->Custome_Model->table_seleRow_limit("*","cell_subscribe",
-//                $oid,[],10,0,"subscribe_created_time","DESC");
-//
-//            if(count($subscribe)>0)
-//            {
-//                $appdata['Data']=$subscribe;
-//                $appdata["ErrorCode"]="";
-//                $appdata["ErrorMessage"]="预定信息获取成功";
-//                $appdata["Success"]=true;
-//                $appdata["Status_Code"]="SUB200";
-//            }
-//            else
-//            {
-//                $appdata['Data']=[];
-//                $appdata["ErrorCode"]="";
-//                $appdata["ErrorMessage"]="无预定数据";
-//                $appdata["Success"]=true;
-//                $appdata["Status_Code"]="SUB201";
-//            }
-//
-//
-//
-//        }
-//
-//        return $appdata;
-//
-//
-//    }
-//
-//    /**
-//     * @param $info
-//     * @return array
-//     */
-//    public function getAdvice($info)
-//    {
-//        $appdata=[];
-//        $oid=[];
-//        if(count($info)>0)
-//        {
-//            if($info['advice_id']==0)
-//            {
-//                $oid=['advice_custome'=>$info['advice_custome']];
-//            }
-//            else
-//            {
-//                $oid=['advice_id <'=>$info['advice_id'],'advice_custome'=>$info['advice_custome']];
-//            }
-//
-//
-//            $Advice=$this->Custome_Model->table_seleRow_limit("*","cell_advice",
-//                $oid,[],10,0,"advice_created_time","DESC");
-//
-//            if(count($Advice)>0)
-//            {
-//                $appdata['Data']=$Advice;
-//                $appdata["ErrorCode"]="";
-//                $appdata["ErrorMessage"]="预定信息获取成功";
-//                $appdata["Success"]=true;
-//                $appdata["Status_Code"]="SUB200";
-//            }
-//            else
-//            {
-//                $appdata['Data']=[];
-//                $appdata["ErrorCode"]="";
-//                $appdata["ErrorMessage"]="无预定数据";
-//                $appdata["Success"]=true;
-//                $appdata["Status_Code"]="SUB201";
-//            }
-//
-//
-//
-//        }
-//
-//        return $appdata;
-//
-//
-//    }
-//
-//    /**
-//     * 添加投诉建议
-//     * @param array $info
-//     * @return array
-//     */
-//    public function AddAdvice($info=[])
-//    {
-//        $appdata=[];
-//        if(count($info)>0)
-//        {
-//            $info['advice_created_time']=date('Y-m-d H:i:s');
-//            //获取要分配的客服
-//            $service=$this->Custome_Model->table_seleRow('Userid',"base_user",['UserDept'=>$info['custome_deptid'],'UserPost'=>'HTY60a243c88b9003.00110708']);
-//            $info['advice_service']=$service[0]['Userid'];
-//            $info['advice_status']='待处理';
-//            $isAddtrue=$this->Custome_Model->table_addRow("cell_advice",$info);
-//            if($isAddtrue>0)
-//            {
-//                $appdata['Data']=[];
-//                $appdata["ErrorCode"]="";
-//                $appdata["ErrorMessage"]="添加成功";
-//                $appdata["Success"]=true;
-//                $appdata["Status_Code"]="ADDA200";
-//            }
-//            else
-//            {
-//                $appdata['Data']=[];
-//                $appdata["ErrorCode"]="";
-//                $appdata["ErrorMessage"]="添加失败";
-//                $appdata["Success"]=false;
-//                $appdata["Status_Code"]="ADDA201";
-//
-//            }
-//
-//        }
-//
-//
-//        return $appdata;
-//
-//    }
-//
-//
-//    /**
-//     * 获取账号额度
-//     * @param $info
-//     * @return array
-//     */
-//    public function getAccount($info=[])
-//    {
-//        $appdata=[];
-//        if(count($info)>0)
-//        {
-//
-//            //获取要分配的客服
-//            $service=$this->Custome_Model->table_seleRow('custome_balance',"cell_customer",['custome_id'=>$info['custome_id']]);
-//
-//            if(count($service)>0)
-//            {
-//                $appdata['Data']=$service[0]['custome_balance'];
-//                $appdata["ErrorCode"]="";
-//                $appdata["ErrorMessage"]="查询成功";
-//                $appdata["Success"]=true;
-//                $appdata["Status_Code"]="ACNT200";
-//            }
-//            else
-//            {
-//                $appdata['Data']=[];
-//                $appdata["ErrorCode"]="";
-//                $appdata["ErrorMessage"]="查询成功";
-//                $appdata["Success"]=false;
-//                $appdata["Status_Code"]="ACNT201";
-//
-//            }
-//
-//        }
-//
-//
-//        return $appdata;
-//
-//
-//    }
-//
-//
-//    /**
-//     * 获得充值历史记录
-//     * @param $info
-//     */
-//    public function getRechargeList($info=[])
-//    {
-//        $appdata=[];
-//        $oid=[];
-//        if(count($info)>0)
-//        {
-//            if($info['recharge_id']==0)
-//            {
-//                $oid=['recharge_custome'=>$info['recharge_custome']];
-//            }
-//            else
-//            {
-//                $oid=['recharge_id <='=>$info['recharge_id'],'recharge_custome'=>$info['recharge_custome']];
-//            }
-//
-//
-//            $Advice=$this->Custome_Model->table_seleRow_limit("*","call_racharge",
-//                $oid,[],10,0,"recharge_created_time","DESC");
-//
-//            if(count($Advice)>0)
-//            {
-//                $appdata['Data']=$Advice;
-//                $appdata["ErrorCode"]="";
-//                $appdata["ErrorMessage"]="充值记录获取成功";
-//                $appdata["Success"]=true;
-//                $appdata["Status_Code"]="RCH200";
-//            }
-//            else
-//            {
-//                $appdata['Data']=[];
-//                $appdata["ErrorCode"]="";
-//                $appdata["ErrorMessage"]="无充值数据";
-//                $appdata["Success"]=true;
-//                $appdata["Status_Code"]="RCH201";
-//            }
-//
-//
-//
-//        }
-//
-//        return $appdata;
-//
-//    }
-//
-//
-//    /**
-//     * 新增充值记录
-//     * @param array $info
-//     * @return array
-//     */
-//    public function addRecharge($info=[])
-//    {
-//        $appdata=[];
-//        if(count($info)>0)
-//        {
-//            $info['recharge_created_time']=date('Y-m-d H:i:s');
-//            $info['recharge_status']="汇款中";
-//            $isAddtrue=$this->Custome_Model->table_addRow("call_racharge",$info);
-//            if($isAddtrue>0)
-//            {
-//                $appdata['Data']=[];
-//                $appdata["ErrorCode"]="";
-//                $appdata["ErrorMessage"]="添加成功";
-//                $appdata["Success"]=true;
-//                $appdata["Status_Code"]="ARECH200";
-//            }
-//            else
-//            {
-//                $appdata['Data']=[];
-//                $appdata["ErrorCode"]="";
-//                $appdata["ErrorMessage"]="添加失败";
-//                $appdata["Success"]=false;
-//                $appdata["Status_Code"]="ARECH201";
-//
-//            }
-//
-//        }
-//
-//
-//        return $appdata;
-//
-//    }
-//
-//
-//    /**
-//     * 将汇款中的状态改为已汇款
-//     * @param array $info
-//     * @return array
-//     */
-//    public function modifyRecharge($info=[])
-//    {
-//        $appdata=[];
-//        if(count($info)>0)
-//        {
-//
-//            $service=$this->Custome_Model->table_seleRow('recharge_status',"call_racharge",['recharge_id'=>$info['recharge_id']]);
-//
-//            if(count($service)>0)
-//            {
-//                if($service[0]['recharge_status']=="汇款中")
-//                {
-//                    $mod=['recharge_status'=>'已汇款'];
-//                    $mod['recharge_updated_time']=date('Y-m-d H:i:s');
-//                    $isAddtrue=$this->Custome_Model->table_updateRow("call_racharge",$mod,['recharge_id'=>$info['recharge_id']]);
-//                    if($isAddtrue>0)
-//                    {
-//                        $appdata['Data']=[];
-//                        $appdata["ErrorCode"]="";
-//                        $appdata["ErrorMessage"]="修改成功";
-//                        $appdata["Success"]=true;
-//                        $appdata["Status_Code"]="ARECH200";
-//                    }
-//                    else
-//                    {
-//                        $appdata['Data']=[];
-//                        $appdata["ErrorCode"]="";
-//                        $appdata["ErrorMessage"]="修改失败";
-//                        $appdata["Success"]=false;
-//                        $appdata["Status_Code"]="ARECH201";
-//
-//                    }
-//
-//                }
-//                else
-//                {
-//                    $appdata['Data']=[];
-//                    $appdata["ErrorCode"]="";
-//                    $appdata["ErrorMessage"]="状态不是汇款中，无法改变状态";
-//                    $appdata["Success"]=false;
-//                    $appdata["Status_Code"]="ARECH200";
-//                }
-//            }
-//
-//
-//        }
-//
-//
-//        return $appdata;
-//
-//    }
-//
-//
-//
-//    /**
-//     * 上传成功体检报告修改数据表信息
-//     * @param array $info
-//     * @return array
-//     */
-//    public function modifyHealth($orderid)
-//    {
-//        $appdata=[];
-//        if($orderid!="")
-//        {
-//            $mod['order_health']=$orderid;
-//            $mod['order_statue']="待审核";
-//            $isAddtrue=$this->Custome_Model->table_updateRow("cell_order",$mod,['order_id'=>$orderid]);
-//            if($isAddtrue>0)
-//            {
-//                $appdata['Data']=[];
-//                $appdata["ErrorCode"]="";
-//                $appdata["ErrorMessage"]="修改成功";
-//                $appdata["Success"]=true;
-//                $appdata["Status_Code"]="MDH200";
-//            }
-//            else
-//            {
-//                $appdata['Data']=[];
-//                $appdata["ErrorCode"]="";
-//                $appdata["ErrorMessage"]="修改失败";
-//                $appdata["Success"]=false;
-//                $appdata["Status_Code"]="MDH201";
-//
-//            }
-//
-//        }
-//        else
-//        {
-//            $appdata['Data']=[];
-//            $appdata["ErrorCode"]="";
-//            $appdata["ErrorMessage"]="参数接收失败";
-//            $appdata["Success"]=false;
-//            $appdata["Status_Code"]="MDH202";
-//        }
-//
-//
-//        return $appdata;
-//
-//    }
-//
-//
-//    public function delAdvice($info)
-//    {
-//        $appdata=[];
-//        if(count($info)>0)
-//        {
-//
-//            $ag_custome=$this->Custome_Model->table_seleRow('recharge_status',"call_racharge",['recharge_id'=>$info['recharge_id']]);
-//            if(count($ag_custome)>0)
-//            {
-//                if($ag_custome[0]['recharge_status']=="汇款中")
-//                {
-//                    $isAddtrue=$this->Custome_Model->table_del("call_racharge",['recharge_id'=>$info['recharge_id']]);
-//                    if($isAddtrue>0)
-//                    {
-//                        $appdata['Data']=[];
-//                        $appdata["ErrorCode"]="";
-//                        $appdata["ErrorMessage"]="删除成功";
-//                        $appdata["Success"]=true;
-//                        $appdata["Status_Code"]="DRCH200";
-//                    }
-//                    else
-//                    {
-//                        $appdata['Data']=[];
-//                        $appdata["ErrorCode"]="";
-//                        $appdata["ErrorMessage"]="删除失败";
-//                        $appdata["Success"]=false;
-//                        $appdata["Status_Code"]="DRCH201";
-//
-//                    }
-//                }
-//                else
-//                {
-//                    $appdata['Data']=[];
-//                    $appdata["ErrorCode"]="";
-//                    $appdata["ErrorMessage"]="订单状态不是汇款中";
-//                    $appdata["Success"]=false;
-//                    $appdata["Status_Code"]="DRCH202";
-//
-//                }
-//            }
-//
-//
-//
-//        }
-//        else
-//        {
-//            $appdata['Data']=[];
-//            $appdata["ErrorCode"]="";
-//            $appdata["ErrorMessage"]="参数接收失败";
-//            $appdata["Success"]=false;
-//            $appdata["Status_Code"]="DRCH203";
-//        }
-//
-//
-//        return $appdata;
-//
-//    }
-//
-//    public function delOrder($info)
-//    {
-//        $appdata=[];
-//        if(count($info)>0)
-//        {
-//
-//            $ag_custome=$this->Custome_Model->table_seleRow('order_statue',"cell_order",['order_id'=>$info['order_id']]);
-//            if(count($ag_custome)>0)
-//            {
-//                if($ag_custome[0]['order_statue']!="进行中" || $ag_custome[0]['order_statue']!="已完成" || $ag_custome[0]['order_statue']!="待实名")
-//                {
-//                    $isAddtrue=$this->Custome_Model->table_del("cell_order",['order_id'=>$info['order_id']]);
-//                    if($isAddtrue>0)
-//                    {
-//                        $appdata['Data']=[];
-//                        $appdata["ErrorCode"]="";
-//                        $appdata["ErrorMessage"]="删除成功";
-//                        $appdata["Success"]=true;
-//                        $appdata["Status_Code"]="DRCH200";
-//                    }
-//                    else
-//                    {
-//                        $appdata['Data']=[];
-//                        $appdata["ErrorCode"]="";
-//                        $appdata["ErrorMessage"]="删除失败";
-//                        $appdata["Success"]=false;
-//                        $appdata["Status_Code"]="DRCH201";
-//
-//                    }
-//                }
-//                else
-//                {
-//                    $appdata['Data']=[];
-//                    $appdata["ErrorCode"]="";
-//                    $appdata["ErrorMessage"]="订单状态不对";
-//                    $appdata["Success"]=false;
-//                    $appdata["Status_Code"]="DRCH202";
-//
-//                }
-//            }
-//            else
-//            {
-//                $appdata['Data']=[];
-//                $appdata["ErrorCode"]="";
-//                $appdata["ErrorMessage"]="订单不存在";
-//                $appdata["Success"]=false;
-//                $appdata["Status_Code"]="DRCH202";
-//
-//            }
-//
-//
-//
-//        }
-//        else
-//        {
-//            $appdata['Data']=[];
-//            $appdata["ErrorCode"]="";
-//            $appdata["ErrorMessage"]="参数接收失败";
-//            $appdata["Success"]=false;
-//            $appdata["Status_Code"]="DRCH203";
-//        }
-//
-//
-//        return $appdata;
-//
-//    }
-//
-//    /**
-//     * 身份证背面上传
-//     * @param array $info
-//     * @return array
-//     */
-//    public function updateBackup($order_id,$cardback)
-//    {
-//        $appdata=[];
-//        if($order_id && $cardback)
-//        {
-//
-//            $isAddtrue=$this->Custome_Model->table_updateRow("cell_order",['order_CardSaveBack'=>$cardback],['order_id'=>$order_id]);
-//            if($isAddtrue>0)
-//            {
-//                $appdata['Data']=[];
-//                $appdata["ErrorCode"]="";
-//                $appdata["ErrorMessage"]="修改成功";
-//                $appdata["Success"]=true;
-//                $appdata["Status_Code"]="ARECH200";
-//            }
-//            else
-//            {
-//                $appdata['Data']=[];
-//                $appdata["ErrorCode"]="";
-//                $appdata["ErrorMessage"]="修改失败";
-//                $appdata["Success"]=false;
-//                $appdata["Status_Code"]="ARECH201";
-//
-//            }
-//
-//
-//        }
-//
-//
-//        return $appdata;
-//
-//    }
-//
-//
-//
-//
-//    /**
-//     * 新增客户寄出牙髓盒快递记录
-//     * @param array $info
-//     * @return array
-//     */
-//    public function addCustomelogistics($info=[])
-//    {
-//        $appdata=[];
-//        if(count($info)>0)
-//        {
-//
-//            $isAddtrue=$this->Custome_Model->table_updateRow("cell_order",['order_Customelogistics'=>$info['order_Customelogistics']],['order_id'=>$info['order_id']]);
-//            if($isAddtrue>0)
-//            {
-//                $appdata['Data']=[];
-//                $appdata["ErrorCode"]="";
-//                $appdata["ErrorMessage"]="添加成功";
-//                $appdata["Success"]=true;
-//                $appdata["Status_Code"]="CLSC203200";
-//            }
-//            else
-//            {
-//                $appdata['Data']=[];
-//                $appdata["ErrorCode"]="";
-//                $appdata["ErrorMessage"]="添加失败";
-//                $appdata["Success"]=false;
-//                $appdata["Status_Code"]="CLSC203201";
-//
-//            }
-//
-//        }
-//
-//
-//        return $appdata;
-//
-//    }
-//
-//
-//
-    
+        if(file_exists($savePath)){
+
+            $url="https://hftx.fzz.cn/public/htmlcover/".$fileName;
+            $fileNamePng=time().".png";
+            $pngSavePath="D:\\phpstudy_pro\\WWW\\Hanfu-World\\public\\htmlcover\\".$fileNamePng;
+            $jsPath = 'D:\\capture.js';
+            $command = "D:\\phantomjs\\bin\\phantomjs {$jsPath}  {$url}  {$pngSavePath}";
+            $result = @exec($command );
+            if(file_exists($savePath.$fileNamePng)){
+                $appdata['Data']="https://hftx.fzz.cn/public/htmlcover/".$fileNamePng;
+                $appdata["ErrorCode"]="";
+                $appdata["ErrorMessage"]="转换成功";
+                $appdata["Success"]=true;
+                $appdata["Status_Code"]="TRA200";
+
+            }
+            else{
+                $appdata['Data']=[];
+                $appdata["ErrorCode"]="";
+                $appdata["ErrorMessage"]="转换图片失败";
+                $appdata["Success"]=false;
+                $appdata["Status_Code"]="TRA201";
+                log_message("error","转换图片失败");
+
+            }
+        }else{
+            $appdata['Data']=[];
+            $appdata["ErrorCode"]="";
+            $appdata["ErrorMessage"]="转换图片失败";
+            $appdata["Success"]=false;
+            $appdata["Status_Code"]="TRA202";
+            log_message("error","网页转换失败");
+
+        }
+        return $appdata;
+
+    }
 
     
 

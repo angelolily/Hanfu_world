@@ -713,7 +713,7 @@ class Charge extends HTY_service
      */
     public function addCode($val)
     {
-        $result['path']=getNormalCode("store?".$val['commodity_id']);
+        $result['path']=getNormalCode("store?".$val['commodity_id'].",".$val['members_id']);
         return $result;
     }
 }

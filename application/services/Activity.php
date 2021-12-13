@@ -181,7 +181,7 @@ class Activity extends HTY_service
     public function publishaa($postId = [])
     {
         $where['activity_signQRcode']=getCode("pages/sign/sign","activity_id",$postId['activity_id']);
-        $where['activity_status']="报名中";
+        $where['activity_status']="已发布";
         $result=$this->Sys_Model->table_updateRow('activity', $where, array('activity_id' => $postId['activity_id']));
         return $result;
     }

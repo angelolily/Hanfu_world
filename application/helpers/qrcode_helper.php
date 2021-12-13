@@ -1,4 +1,5 @@
 <?php
+include 'phpqrcode.php';
 header('content-type:text/html;charset=utf-8');
 //配置APPID、APPSECRET
 
@@ -40,12 +41,20 @@ function getCode($path,$name,$userId){
     $name=time().rand(1111,9999).".png";
     $filepath="./public/qrcode/".$name;
     file_put_contents($filepath,$result);
-    $base_url='http://'.$_SERVER['HTTP_HOST'].substr($_SERVER['PHP_SELF'],0,strrpos($_SERVER['PHP_SELF'],'/index.php')+1);
+    $base_url='https://'.$_SERVER['HTTP_HOST'].substr($_SERVER['PHP_SELF'],0,strrpos($_SERVER['PHP_SELF'],'/index.php')+1);
     $filepath= $base_url."public/qrcode/".$name;
 //    $base64_image ="data:image/jpeg;base64,".base64_encode($result );
     return $filepath;
 }
-
+function getNormalCode($url){
+    $base_url="https://hftx.fzz.cn/";
+    $name=time().rand(1111,9999).".png";
+    $filepath="./public/qrcode/".$name;
+    QRcode::png($base_url.$url,$filepath, 10,  10,false);
+    $filepath_url='https://'.$_SERVER['HTTP_HOST'].substr($_SERVER['PHP_SELF'],0,strrpos($_SERVER['PHP_SELF'],'/index.php')+1);
+    $filepath=$filepath_url.$filepath;
+    return $filepath;
+}
 
 //把请求发送到微信服务器换取二维码
 function httpRequest($url,$data='',$method='GET'){

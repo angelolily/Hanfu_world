@@ -41,11 +41,13 @@ function exportExcel($title=array(), $data=array(), $fileName='', $savePath='./'
         foreach($data AS $_v){
             $j = 0;
             foreach($_v AS $_cell){
-                if($j==12)
-                {
-                    $_cell=iconv('utf-8','GBK',"\t".$_cell);
-                }
 
+                $temp=$_cell;
+                $temp=iconv('utf-8','GBK//ignore',"\t".$temp);
+
+                if($temp==$_cell){
+                    $_cell=$temp;
+                }
                 $obj->getActiveSheet(0)->setCellValue($cellName[$j] . ($i+$_row), $_cell);
                 $j++;
             }
